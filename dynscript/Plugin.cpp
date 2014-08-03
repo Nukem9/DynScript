@@ -63,7 +63,7 @@ void UnloadDllCallback(CBTYPE Type, PLUG_CB_UNLOADDLL *Info)
 {
 	// void OnUnloadDll(ptr DllBase)
 	auto context = Script::CreateContext(def.asOnUnloadDll);
-	context->SetArgDWord(0, (asDWORD)Info->UnloadDll->lpBaseOfDll);
+	context->SetArgPointerVal(0, (asDWORD)Info->UnloadDll->lpBaseOfDll);
 	context->Execute();
 }
 
@@ -89,7 +89,7 @@ void BreakpointCallback(CBTYPE Type, PLUG_CB_BREAKPOINT *Info)
 	// void OnBreakpoint(int Type, ptr Address, string &in Name, string &in Module)
 	auto context = Script::CreateContext(def.asOnBreakpoint);
 	context->SetArgDWord(0,	Info->breakpoint->type);
-	context->SetArgAddress(1, (void *)Info->breakpoint->addr);
+	context->SetArgPointerVal(1, Info->breakpoint->addr);
 	context->SetArgObject(2, &name);
 	context->SetArgObject(3, &mod);
 	context->Execute();

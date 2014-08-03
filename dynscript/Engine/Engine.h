@@ -7,6 +7,14 @@ namespace Script
 
 #define VERIFY(x) assert((x) >= 0)
 
+#ifdef _WIN64
+#define SetReturnPointerVal SetReturnQWord
+#define SetArgPointerVal SetArgQWord
+#else
+#define SetReturnPointerVal SetReturnDWord
+#define SetArgPointerVal SetArgDWord
+#endif
+
 	struct ModuleDef
 	{
 		asIScriptModule *asModule;

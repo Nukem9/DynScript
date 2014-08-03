@@ -58,7 +58,7 @@ namespace Global
 	void asAddressof(asIScriptGeneric *Gen)
 	{
 		// Get a pointer to the argument and return it
-		Gen->SetReturnDWord((asDWORD)Gen->GetAddressOfArg(0));
+		Gen->SetReturnPointerVal((asDWORD)Gen->GetAddressOfArg(0));
 	}
 
 	void asSprintf(asIScriptGeneric *Gen)
