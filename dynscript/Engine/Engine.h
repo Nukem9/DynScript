@@ -5,7 +5,11 @@ namespace Script
 #include <string>
 #include <assert.h>
 
+#ifdef _DEBUG
 #define VERIFY(x) assert((x) >= 0)
+#else
+#define VERIFY(x) x
+#endif
 
 #ifdef _WIN64
 #define SetReturnPointerVal SetReturnQWord

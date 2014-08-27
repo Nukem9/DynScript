@@ -11,16 +11,13 @@ void InitDebugCallback(CBTYPE Type, PLUG_CB_INITDEBUG *Info)
 	std::string file(Info->szFileName);
 
 	// void OnInitDebug(string &in File)
-	auto context = Script::CreateContext(def.asOnInitDebug);
-	context->SetArgObject(0, &file);
-	context->Execute();
+	asExecuteDynamic(def.asOnInitDebug, bindOBJ(&file));
 }
 
 void StopDebugCallback(CBTYPE Type, PLUG_CB_STOPDEBUG *Info)
 {
 	// void OnStopDebug()
-	auto context = Script::CreateContext(def.asOnStopDebug);
-	context->Execute();
+	asExecuteDynamic(def.asOnStopDebug);
 }
 
 void CreateProcessCallback(CBTYPE Type, PLUG_CB_CREATEPROCESS *Info)
@@ -30,9 +27,7 @@ void CreateProcessCallback(CBTYPE Type, PLUG_CB_CREATEPROCESS *Info)
 void ExitProcessCallback(CBTYPE Type, PLUG_CB_EXITPROCESS *Info)
 {
 	// void OnExitProcess(uint ExitCode)
-	auto context = Script::CreateContext(def.asOnExitProcess);
-	context->SetArgDWord(0, Info->ExitProcess->dwExitCode);
-	context->Execute();
+	asExecuteDynamic(def.asOnExitProcess, Info->ExitProcess->dwExitCode);
 }
 
 void CreateThreadCallback(CBTYPE Type, PLUG_CB_CREATETHREAD *Info)
@@ -42,17 +37,13 @@ void CreateThreadCallback(CBTYPE Type, PLUG_CB_CREATETHREAD *Info)
 void ExitThreadCallback(CBTYPE Type, PLUG_CB_EXITTHREAD *Info)
 {
 	// void OnExitThread(uint ThreadId, uint ExitCode)
-	auto context = Script::CreateContext(def.asOnExitThread);
-	context->SetArgDWord(0, Info->dwThreadId);
-	context->SetArgDWord(1, Info->ExitThread->dwExitCode);
-	context->Execute();
+	asExecuteDynamic(def.asOnExitThread, Info->dwThreadId, Info->ExitThread->dwExitCode);
 }
 
 void SystemBreakpointCallback(CBTYPE Type, PLUG_CB_SYSTEMBREAKPOINT *Info)
 {
 	// void OnSystemBreakpoint()
-	auto context = Script::CreateContext(def.asOnSystemBreakpoint);
-	context->Execute();
+	asExecuteDynamic(def.asOnSystemBreakpoint);
 }
 
 void LoadDllCallback(CBTYPE Type, PLUG_CB_LOADDLL *Info)
@@ -62,9 +53,7 @@ void LoadDllCallback(CBTYPE Type, PLUG_CB_LOADDLL *Info)
 void UnloadDllCallback(CBTYPE Type, PLUG_CB_UNLOADDLL *Info)
 {
 	// void OnUnloadDll(ptr DllBase)
-	auto context = Script::CreateContext(def.asOnUnloadDll);
-	context->SetArgPointerVal(0, (asDWORD)Info->UnloadDll->lpBaseOfDll);
-	context->Execute();
+	asExecuteDynamic(def.asOnUnloadDll, (ULONG_PTR)Info->UnloadDll->lpBaseOfDll);
 }
 
 void DebugStringCallback(CBTYPE Type, PLUG_CB_OUTPUTDEBUGSTRING *Info)
@@ -72,9 +61,7 @@ void DebugStringCallback(CBTYPE Type, PLUG_CB_OUTPUTDEBUGSTRING *Info)
 	std::string message(Info->DebugString->lpDebugStringData);
 
 	// void OnOutputDebugString(string &in Message)
-	auto context = Script::CreateContext(def.asOnOutputDebugString);
-	context->SetArgObject(0, &message);
-	context->Execute();
+	asExecuteDynamic(def.asOnOutputDebugString, bindOBJ(&message));
 }
 
 void ExceptionCallback(CBTYPE Type, PLUG_CB_EXCEPTION *Info)
@@ -87,50 +74,37 @@ void BreakpointCallback(CBTYPE Type, PLUG_CB_BREAKPOINT *Info)
 	std::string mod(Info->breakpoint->mod);
 
 	// void OnBreakpoint(int Type, ptr Address, string &in Name, string &in Module)
-	auto context = Script::CreateContext(def.asOnBreakpoint);
-	context->SetArgDWord(0,	Info->breakpoint->type);
-	context->SetArgPointerVal(1, Info->breakpoint->addr);
-	context->SetArgObject(2, &name);
-	context->SetArgObject(3, &mod);
-	context->Execute();
+	asExecuteDynamic(def.asOnBreakpoint, (int)Info->breakpoint->type, Info->breakpoint->addr, bindOBJ(&name), bindOBJ(&mod));
 }
 
 void PauseCallback(CBTYPE Type, PLUG_CB_PAUSEDEBUG *Info)
 {
 	// void OnPauseDebug()
-	auto context = Script::CreateContext(def.asOnPauseDebug);
-	context->Execute();
+	asExecuteDynamic(def.asOnPauseDebug);
 }
 
 void ResumeCallback(CBTYPE Type, PLUG_CB_RESUMEDEBUG *Info)
 {
 	// void OnResumeDebug()
-	auto context = Script::CreateContext(def.asOnResumeDebug);
-	context->Execute();
+	asExecuteDynamic(def.asOnResumeDebug);
 }
 
 void SteppedCallback(CBTYPE Type, PLUG_CB_STEPPED *Info)
 {
 	// void OnStepped()
-	auto context = Script::CreateContext(def.asOnStepped);
-	context->Execute();
+	asExecuteDynamic(def.asOnStepped);
 }
 
 void AttachCallback(CBTYPE Type, PLUG_CB_ATTACH *Info)
 {
 	// void OnAttach(uint ProcessId)
-	auto context = Script::CreateContext(def.asOnAttach);
-	context->SetArgDWord(0, Info->dwProcessId);
-	context->Execute();
+	asExecuteDynamic(def.asOnAttach, Info->dwProcessId);
 }
 
 void DetachCallback(CBTYPE Type, PLUG_CB_DETACH *Info)
 {
 	// void OnDetach(uint ProcessId, uint ThreadId)
-	auto context = Script::CreateContext(def.asOnDetach);
-	context->SetArgDWord(0, Info->fdProcessInfo->dwProcessId);
-	context->SetArgDWord(1, Info->fdProcessInfo->dwThreadId);
-	context->Execute();
+	asExecuteDynamic(def.asOnDetach, Info->fdProcessInfo->dwProcessId, Info->fdProcessInfo->dwThreadId);
 }
 
 void DebugEventCallback(CBTYPE Type, PLUG_CB_DEBUGEVENT *Info)
@@ -140,9 +114,7 @@ void DebugEventCallback(CBTYPE Type, PLUG_CB_DEBUGEVENT *Info)
 void MenuEntryCallback(CBTYPE Type, PLUG_CB_MENUENTRY *Info)
 {
 	// void OnMenuEvent(int Entry)
-	auto context = Script::CreateContext(def.asOnMenuEvent);
-	context->SetArgDWord(0, Info->hEntry);
-	context->Execute();
+	asExecuteDynamic(def.asOnMenuEvent, Info->hEntry);
 }
 
 DLL_EXPORT bool pluginit(PLUG_INITSTRUCT *InitStruct)
@@ -205,8 +177,5 @@ DLL_EXPORT void plugsetup(PLUG_SETUPSTRUCT *SetupStruct)
 	_plugin_menuaddentry(hMenu, 0, "Load script");
 
 	// void OnPluginSetup(int DebuggerVersion, int PluginVersion)
-	auto context = Script::CreateContext(def.asOnPluginSetup);
-	context->SetArgDWord(0, 20);
-	context->SetArgDWord(1, PLUGIN_VERSION);
-	context->Execute();
+	asExecuteDynamic(def.asOnPluginSetup, bindINT(20), bindINT(PLUGIN_VERSION));
 }
