@@ -11,7 +11,7 @@ void InitDebugCallback(CBTYPE Type, PLUG_CB_INITDEBUG *Info)
 	std::string file(Info->szFileName);
 
 	// void OnInitDebug(string &in File)
-	asExecuteDynamic(def.asOnInitDebug, bindOBJ(&file));
+	asExecuteDynamic(def.asOnInitDebug, obj &file);
 }
 
 void StopDebugCallback(CBTYPE Type, PLUG_CB_STOPDEBUG *Info)
@@ -61,7 +61,7 @@ void DebugStringCallback(CBTYPE Type, PLUG_CB_OUTPUTDEBUGSTRING *Info)
 	std::string message(Info->DebugString->lpDebugStringData);
 
 	// void OnOutputDebugString(string &in Message)
-	asExecuteDynamic(def.asOnOutputDebugString, bindOBJ(&message));
+	asExecuteDynamic(def.asOnOutputDebugString, obj &message);
 }
 
 void ExceptionCallback(CBTYPE Type, PLUG_CB_EXCEPTION *Info)
@@ -74,7 +74,7 @@ void BreakpointCallback(CBTYPE Type, PLUG_CB_BREAKPOINT *Info)
 	std::string mod(Info->breakpoint->mod);
 
 	// void OnBreakpoint(int Type, ptr Address, string &in Name, string &in Module)
-	asExecuteDynamic(def.asOnBreakpoint, (int)Info->breakpoint->type, Info->breakpoint->addr, bindOBJ(&name), bindOBJ(&mod));
+	asExecuteDynamic(def.asOnBreakpoint, (int)Info->breakpoint->type, Info->breakpoint->addr, obj &name, obj &mod);
 }
 
 void PauseCallback(CBTYPE Type, PLUG_CB_PAUSEDEBUG *Info)
@@ -177,5 +177,5 @@ DLL_EXPORT void plugsetup(PLUG_SETUPSTRUCT *SetupStruct)
 	_plugin_menuaddentry(hMenu, 0, "Load script");
 
 	// void OnPluginSetup(int DebuggerVersion, int PluginVersion)
-	asExecuteDynamic(def.asOnPluginSetup, bindINT(20), bindINT(PLUGIN_VERSION));
+	asExecuteDynamic(def.asOnPluginSetup, 20, PLUGIN_VERSION);
 }

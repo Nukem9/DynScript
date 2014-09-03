@@ -1,19 +1,19 @@
 #pragma once
 
-#define bindOBJ(x) ((PVOID **)(x))
-#define bindINT(x) ((int)(x))
+#define obj (PVOID **)
 
 #pragma warning(push)
 #pragma warning(disable : 4244)
 template<typename T>
-int asAddArgDynamic(asIScriptContext *Context, int Index, T Argument)
+FORCEINLINE int asAddArgDynamic(asIScriptContext *Context, int Index, T Argument)
 {
 	//
 	// These checks are resolved at compile time
 	//
 	static_assert(!std::is_pointer<T>::value, "asAddArgDynamic<T> doesn't support pointers!");
 
-	if (std::is_same<T, char>::value ||
+	if (std::is_same<T, bool>::value ||
+		std::is_same<T, char>::value ||
 		std::is_same<T, unsigned char>::value
 		)
 		return Context->SetArgByte(Index, Argument);
@@ -43,14 +43,34 @@ int asAddArgDynamic(asIScriptContext *Context, int Index, T Argument)
 	if (std::is_same<T, double>::value)
 		return Context->SetArgDouble(Index, Argument);
 
+	//
+	// Verify that the parameter was handled
+	//
+	static_assert((std::is_same<T, bool>::value ||
+		std::is_same<T, char>::value ||
+		std::is_same<T, unsigned char>::value ||
+		std::is_same<T, short>::value ||
+		std::is_same<T, unsigned short>::value ||
+		std::is_same<T, int>::value ||
+		std::is_same<T, unsigned int>::value ||
+		std::is_same<T, long>::value ||
+		std::is_same<T, unsigned long>::value ||
+		std::is_same<T, __int64>::value ||
+		std::is_same<T, unsigned __int64>::value ||
+		std::is_same<T, long long>::value ||
+		std::is_same<T, unsigned long long>::value ||
+		std::is_same<T, float>::value ||
+		std::is_same<T, double>::value
+		), "Unsupported dynamic type detected!");
+
 	return -1;
 }
-#pragma warning(pop)
 
-static int asAddArgDynamic(asIScriptContext *Context, int Index, PVOID **Argument)
+FORCEINLINE int asAddArgDynamic(asIScriptContext *Context, int Index, PVOID **Argument)
 {
 	return Context->SetArgObject(Index, (PVOID)Argument);
 }
+#pragma warning(pop)
 
 template<typename T>
 void AddArguments(asIScriptContext *Context, int Index, const T& Value)

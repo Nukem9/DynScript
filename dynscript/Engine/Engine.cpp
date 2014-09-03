@@ -21,7 +21,7 @@ namespace Script
 		EngInst->SetEngineProperty(asEP_OPTIMIZE_BYTECODE, 1);
 		EngInst->SetEngineProperty(asEP_COMPILER_WARNINGS, 1);
 
-		// Set the message callback to receive information on errors in human readable form.
+		// Set the message callback to receive information on errors in human readable format
 		VERIFY(EngInst->SetMessageCallback(asFUNCTION(EngineMessage), 0, asCALL_CDECL));
 
 		// Register everything

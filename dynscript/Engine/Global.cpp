@@ -38,6 +38,7 @@ namespace Global
 
 	void asTypeof(asIScriptGeneric *Gen)
 	{
+		// Variable type -> type decl string
 		std::string typeName(Gen->GetEngine()->GetTypeDeclaration(Gen->GetArgTypeId(0)));
 
 		Gen->SetReturnObject(&typeName);
@@ -58,7 +59,7 @@ namespace Global
 	void asAddressof(asIScriptGeneric *Gen)
 	{
 		// Get a pointer to the argument and return it
-		Gen->SetReturnPointerVal((asDWORD)Gen->GetAddressOfArg(0));
+		Gen->SetReturnPointerVal(Gen->GetAddressOfArg(0));
 	}
 
 	void asSprintf(asIScriptGeneric *Gen)
@@ -133,7 +134,7 @@ namespace Global
 				if (type == StringTypeId)
 					va_arg(va, const char *) = ((std::string *)addr)->c_str();
 				else
-					va_arg(va, PVOID) = *(PVOID *)addr;
+					VERIFY(-1);
 				break;
 			}
 		}
