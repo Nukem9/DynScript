@@ -1,6 +1,6 @@
 #pragma once
 
-#define obj (PVOID **)
+typedef PVOID **OBJECT;
 
 #pragma warning(push)
 #pragma warning(disable : 4244)

@@ -11,7 +11,7 @@ void InitDebugCallback(CBTYPE Type, PLUG_CB_INITDEBUG *Info)
 	std::string file(Info->szFileName);
 
 	// void OnInitDebug(string &in File)
-	asExecuteDynamic(def.asOnInitDebug, obj &file);
+	asExecuteDynamic(def.asOnInitDebug, (OBJECT)&file);
 }
 
 void StopDebugCallback(CBTYPE Type, PLUG_CB_STOPDEBUG *Info)
@@ -58,10 +58,33 @@ void UnloadDllCallback(CBTYPE Type, PLUG_CB_UNLOADDLL *Info)
 
 void DebugStringCallback(CBTYPE Type, PLUG_CB_OUTPUTDEBUGSTRING *Info)
 {
-	std::string message(Info->DebugString->lpDebugStringData);
+	//
+	// Convert from unicode to multi-byte if needed
+	//
+	char buffer[2048];
+	memset(buffer, 0, sizeof(buffer));
+
+	size_t maxlen = min(ARRAYSIZE(buffer), Info->DebugString->nDebugStringLength);
+
+	if (Info->DebugString->fUnicode)
+	{
+		wchar_t wcharbuf[2048];
+
+		if (DbgMemRead((duint)Info->DebugString->lpDebugStringData, (PUCHAR)wcharbuf, maxlen * sizeof(wchar_t)))
+			wcstombs(buffer, wcharbuf, ARRAYSIZE(buffer));
+	}
+	else
+	{
+		DbgMemRead((duint)Info->DebugString->lpDebugStringData, (PUCHAR)buffer, maxlen);
+	}
+
+	//
+	// Convert to script object
+	//
+	std::string message(buffer);
 
 	// void OnOutputDebugString(string &in Message)
-	asExecuteDynamic(def.asOnOutputDebugString, obj &message);
+	asExecuteDynamic(def.asOnOutputDebugString, (OBJECT)&message);
 }
 
 void ExceptionCallback(CBTYPE Type, PLUG_CB_EXCEPTION *Info)
@@ -74,7 +97,7 @@ void BreakpointCallback(CBTYPE Type, PLUG_CB_BREAKPOINT *Info)
 	std::string mod(Info->breakpoint->mod);
 
 	// void OnBreakpoint(int Type, ptr Address, string &in Name, string &in Module)
-	asExecuteDynamic(def.asOnBreakpoint, (int)Info->breakpoint->type, Info->breakpoint->addr, obj &name, obj &mod);
+	asExecuteDynamic(def.asOnBreakpoint, (int)Info->breakpoint->type, Info->breakpoint->addr, (OBJECT)&name, (OBJECT)&mod);
 }
 
 void PauseCallback(CBTYPE Type, PLUG_CB_PAUSEDEBUG *Info)

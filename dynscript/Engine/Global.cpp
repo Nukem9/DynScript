@@ -47,7 +47,7 @@ namespace Global
 	void asTypesize(asIScriptGeneric *Gen)
 	{
 		// Argument is a string
-		std::string *arg = (std::string *)Gen->GetArgObject(0);
+		std::string *arg = static_cast<std::string *>(Gen->GetArgObject(0));
 
 		// Type name -> type id
 		int typeId = Gen->GetEngine()->GetTypeIdByDecl(arg->c_str());

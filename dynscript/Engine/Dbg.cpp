@@ -23,11 +23,19 @@ namespace Dbg
 		VERIFY(Engine->RegisterGlobalFunction("bool MemWrite(ptr Address, ptr Buffer, uint Size, uint &out BytesWritten = 0)", asFUNCTION(asMemWrite), asCALL_CDECL));
 		VERIFY(Engine->RegisterGlobalFunction("bool MemRead(ptr Address, ptr Buffer, uint Size, uint &out BytesRead = 0)", asFUNCTION(asMemRead), asCALL_CDECL));
 		VERIFY(Engine->RegisterGlobalFunction("bool MemFill(ptr Address, byte Value, uint Size)", asFUNCTION(asMemFill), asCALL_CDECL));
+		VERIFY(Engine->RegisterGlobalFunction("ptr MemGetPageSize(ptr Base)", asFUNCTION(asMemGetPageSize), asCALL_CDECL));
+		VERIFY(Engine->RegisterGlobalFunction("ptr MemGetBaseAddr(ptr Address, uint &out Size = 0)", asFUNCTION(asMemGetBaseAddr), asCALL_CDECL));
+		VERIFY(Engine->RegisterGlobalFunction("bool CmdExec(string &in Cmd)", asFUNCTION(asCmdExec), asCALL_CDECL));
+		VERIFY(Engine->RegisterGlobalFunction("bool CmdExecDirect(string &in Cmd)", asFUNCTION(asCmdExecDirect), asCALL_CDECL));
+		//VERIFY(Engine->RegisterGlobalFunction("bool MemMap(........)", asFUNCTION(asMemMap), asCALL_CDECL));
+		VERIFY(Engine->RegisterGlobalFunction("bool IsValidExpression(string &in Expression)", asFUNCTION(asIsValidExpression), asCALL_CDECL));
+		VERIFY(Engine->RegisterGlobalFunction("bool IsDebugging()", asFUNCTION(asIsDebugging), asCALL_CDECL));
+		VERIFY(Engine->RegisterGlobalFunction("bool IsJumpGoingToExecute(ptr Address)", asFUNCTION(asIsJumpGoingToExecute), asCALL_CDECL));
 	}
 
-	PVOID asValFromString(std::string &Value)
+	ULONG_PTR asValFromString(std::string &Value)
 	{
-		return (PVOID)DbgValFromString(Value.c_str());
+		return (ULONG_PTR)DbgValFromString(Value.c_str());
 	}
 
 	bool asMemWrite(PVOID Address, PVOID Buffer, asUINT Size, asUINT *BytesWritten)
@@ -37,7 +45,7 @@ namespace Dbg
 			if (BytesWritten)
 				*BytesWritten = Size;
 
-			return false;
+			return true;
 		}
 
 		if (BytesWritten)
@@ -64,14 +72,11 @@ namespace Dbg
 
 	bool asMemFill(PVOID Address, asBYTE Value, asUINT Size)
 	{
-		asBYTE buffer[256];
+		asBYTE buffer[512];
 		memset(buffer, Value, min(Size, sizeof(buffer)));
 
-		for (;;)
+		for (; Size > 0;)
 		{
-			if (Size <= 0)
-				break;
-
 			if (!asMemWrite(Address, buffer, min(Size, sizeof(buffer)), nullptr))
 				return false;
 
@@ -79,6 +84,52 @@ namespace Dbg
 		}
 
 		return true;
+	}
+
+	ULONG_PTR asMemGetPageSize(ULONG_PTR Base)
+	{
+		return DbgMemGetPageSize(Base);
+	}
+
+	ULONG_PTR asMemGetBaseAddr(ULONG_PTR Address, asUINT *Size)
+	{
+		duint retSize	= 0;
+		ULONG_PTR base	= DbgMemFindBaseAddr(Address, &retSize);
+
+		if (*Size)
+			*Size = retSize;
+
+		return base;
+	}
+
+	bool asCmdExec(std::string &Cmd)
+	{
+		return DbgCmdExec(Cmd.c_str());
+	}
+
+	bool asCmdExecDirect(std::string &Cmd)
+	{
+		return DbgCmdExecDirect(Cmd.c_str());
+	}
+
+// 	bool asMemMap(/*....*/)
+// 	{
+// 		return false;
+// 	}
+
+	bool asIsValidExpression(std::string &Expression)
+	{
+		return DbgIsValidExpression(Expression.c_str());
+	}
+
+	bool asIsDebugging()
+	{
+		return DbgIsDebugging();
+	}
+
+	bool asIsJumpGoingToExecute(ULONG_PTR Address)
+	{
+		return DbgIsJumpGoingToExecute(Address);
 	}
 }
 }

@@ -10,8 +10,10 @@ namespace Script
 		if (EngInst)
 			return false;
 
+		//
 		// http://www.angelcode.com/angelscript/sdk/docs/manual/doc_hello_world.html
 		// Create the script engine
+		//
 		EngInst = asCreateScriptEngine(ANGELSCRIPT_VERSION);
 
 		if (!EngInst)
@@ -24,8 +26,11 @@ namespace Script
 		// Set the message callback to receive information on errors in human readable format
 		VERIFY(EngInst->SetMessageCallback(asFUNCTION(EngineMessage), 0, asCALL_CDECL));
 
+		//
 		// Register everything
+		//
 		// Semi-built in
+		//
 		RegisterStdString(EngInst);
 
 		// Custom
