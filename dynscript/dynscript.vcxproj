@@ -67,6 +67,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -117,6 +118,7 @@
     <ClInclude Include="angelscript\source\as_typeinfo.h" />
     <ClInclude Include="angelscript\source\as_variablescope.h" />
     <ClInclude Include="Engine\Dbg.h" />
+    <ClInclude Include="Engine\EnumBinder.h" />
     <ClInclude Include="Engine\FuncBinder.h" />
     <ClInclude Include="Engine\Global.h" />
     <ClInclude Include="Engine\GUI.h" />
@@ -285,10 +287,6 @@
     <ClCompile Include="angelscript\source\as_variablescope.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Engine\FuncBinder.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="dynscript.cpp" />
     <ClCompile Include="Engine\Dbg.cpp">

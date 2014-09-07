@@ -66,7 +66,7 @@ FORCEINLINE int asAddArgDynamic(asIScriptContext *Context, int Index, T Argument
 	return -1;
 }
 
-FORCEINLINE int asAddArgDynamic(asIScriptContext *Context, int Index, PVOID **Argument)
+FORCEINLINE int asAddArgDynamic(asIScriptContext *Context, int Index, OBJECT Argument)
 {
 	return Context->SetArgObject(Index, (PVOID)Argument);
 }
@@ -91,6 +91,14 @@ asIScriptContext *asExecuteDynamic(asIScriptFunction *Function, Args&&... Parame
 {
 	auto context = Script::CreateContext(Function);
 
+	//
+	// Verify that the number of parameters matches the one in the script code
+	//
+	assert(Function->GetParamCount() == sizeof...(Parameters));
+
+	//
+	// Pass parameters and execute the function
+	//
 	if (context)
 	{
 		AddArguments(context, 0, Parameters...);

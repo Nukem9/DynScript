@@ -15,12 +15,16 @@ namespace Global
 		// TYPES
 		//
 		VERIFY(Engine->RegisterTypedef("byte", "uint8"));
-		VERIFY(Engine->RegisterTypedef("handle", "uint"));
+		VERIFY(Engine->RegisterTypedef("word", "uint16"));
+		VERIFY(Engine->RegisterTypedef("dword", "uint"));
+		VERIFY(Engine->RegisterTypedef("qword", "uint16"));
 
 #ifdef _WIN64_
 		VERIFY(Engine->RegisterTypedef("ptr", "uint64"));
+		VERIFY(Engine->RegisterTypedef("handle", "uint64"));
 #else
 		VERIFY(Engine->RegisterTypedef("ptr", "uint"));
+		VERIFY(Engine->RegisterTypedef("handle", "uint"));
 #endif
 
 		StringTypeId = Engine->GetTypeIdByDecl("string");
@@ -134,7 +138,8 @@ namespace Global
 				if (type == StringTypeId)
 					va_arg(va, const char *) = ((std::string *)addr)->c_str();
 				else
-					VERIFY(-1);
+					memcpy(va, addr, size);
+					va += size;
 				break;
 			}
 		}

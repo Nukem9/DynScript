@@ -96,7 +96,7 @@ void BreakpointCallback(CBTYPE Type, PLUG_CB_BREAKPOINT *Info)
 	std::string name(Info->breakpoint->name);
 	std::string mod(Info->breakpoint->mod);
 
-	// void OnBreakpoint(int Type, ptr Address, string &in Name, string &in Module)
+	// void OnBreakpoint(BPXTYPE Type, ptr Address, string &in Name, string &in Module)
 	asExecuteDynamic(def.asOnBreakpoint, (int)Info->breakpoint->type, Info->breakpoint->addr, (OBJECT)&name, (OBJECT)&mod);
 }
 
@@ -160,7 +160,7 @@ DLL_EXPORT bool pluginit(PLUG_INITSTRUCT *InitStruct)
 
 	Script::EngineLoad(&def, dir);
 
-	// Add any of the callbacks
+	// Add all of the callbacks
 	_plugin_registercallback(pluginHandle, CB_INITDEBUG,			(CBPLUGIN)InitDebugCallback);
 	_plugin_registercallback(pluginHandle, CB_STOPDEBUG,			(CBPLUGIN)StopDebugCallback);
 	_plugin_registercallback(pluginHandle, CB_CREATEPROCESS,		(CBPLUGIN)CreateProcessCallback);

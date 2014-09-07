@@ -89,7 +89,7 @@ namespace Script
 		GetFunction(void, OnUnloadDll,			"ptr DllBase");
 		GetFunction(void, OnOutputDebugString,	"string &in Message");
 		GetFunction(void, OnException,			"int param");
-		GetFunction(void, OnBreakpoint,			"int Type, ptr Address, string &in Name, string &in Module");
+		GetFunction(void, OnBreakpoint,			"BPXTYPE Type, ptr Address, string &in Name, string &in Module");
 		GetFunction(void, OnPauseDebug,			"");
 		GetFunction(void, OnResumeDebug,		"");
 		GetFunction(void, OnStepped,			"");

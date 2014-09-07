@@ -5,3 +5,4 @@
 #include "GUI.h"
 #include "Dbg.h"
 #include "FuncBinder.h"
+#include "EnumBinder.h"

@@ -6,10 +6,17 @@ namespace GUI
 {
 	void Init(asIScriptEngine *Engine)
 	{
-		// Register all GUI variables and functions
+		// Register all GUI variables and functions under "GUI"
 		Engine->SetDefaultNamespace("GUI");
 
+		//
+		// VARIABLES
+		//
 		VERIFY(Engine->RegisterGlobalProperty("const int MenuHandle", &hMenu));
+
+		//
+		// FUNCTIONS
+		//
 		VERIFY(Engine->RegisterGlobalFunction("int AddSubmenu(int Handle, string &in Title)", asFUNCTION(asAddSubmenu), asCALL_CDECL));
 		VERIFY(Engine->RegisterGlobalFunction("bool AddMenuEntry(int Handle, int Entry, string &in Title)", asFUNCTION(asAddMenuEntry), asCALL_CDECL));
 		VERIFY(Engine->RegisterGlobalFunction("bool AddMenuSeparator(int Handle)", asFUNCTION(asAddMenuSeparator), asCALL_CDECL));

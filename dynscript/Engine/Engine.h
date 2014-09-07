@@ -12,7 +12,7 @@ namespace Script
 #endif
 
 #ifdef _WIN64
-#define SetReturnPointerVal(x) SetReturnDWord((asQWORD)(x))
+#define SetReturnPointerVal(x) SetReturnQWord((asQWORD)(x))
 #define SetArgPointerVal SetArgQWord
 #else
 #define SetReturnPointerVal(x) SetReturnDWord((asDWORD)(x))

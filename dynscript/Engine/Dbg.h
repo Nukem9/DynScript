@@ -22,5 +22,13 @@ namespace Dbg
 	bool asIsValidExpression(std::string &Expression);
 	bool asIsDebugging();
 	bool asIsJumpGoingToExecute(ULONG_PTR Address);
+
+	bool asGetLabelAt(ULONG_PTR Address, SEGMENTREG Segment, std::string *Text);
+	bool asSetLabelAt(ULONG_PTR Address, std::string &Text);
+
+	asBYTE asByteAt(ULONG_PTR Address);
+	asWORD asWordAt(ULONG_PTR Address);
+	asDWORD asDwordAt(ULONG_PTR Address);
+	asQWORD asQwordAt(ULONG_PTR Address);
 }
 }
