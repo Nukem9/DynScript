@@ -42,6 +42,20 @@ void OnExitThread(uint ThreadId, uint ExitCode)
 void OnSystemBreakpoint()
 {
   printf("OnSystemBreakpoint()\n");
+  
+  REGDUMP dump;
+  Dbg::GetRegDump(dump);
+  
+  printf("EAX = 0x%X\n", dump.cax);
+  printf("EBX = 0x%X\n", dump.cbx);
+  printf("ECX = 0x%X\n", dump.ccx);
+  printf("EDX = 0x%X\n", dump.cdx);
+  printf("EBP = 0x%X\n", dump.cbp);
+  printf("ESP = 0x%X\n", dump.csp);
+  printf("ESI = 0x%X\n", dump.csi);
+  printf("EDI = 0x%X\n", dump.cdi);
+  printf("EIP = 0x%X\n", dump.cip);
+  printf("\n");
   printf("EAX = 0x%X\n", Dbg::ValFromString("eax"));
   printf("EBX = 0x%X\n", Dbg::ValFromString("ebx"));
   printf("ECX = 0x%X\n", Dbg::ValFromString("ecx"));
@@ -60,7 +74,7 @@ void OnLoadDll(int param)
 
 void OnUnloadDll(ptr DllBase)
 {
-  printf("OnUnloadDll(0x%llX)\n", DllBase);
+  printf("OnUnloadDll(0x%p)\n", DllBase);
 }
 
 void OnOutputDebugString(string &in Message)
@@ -73,10 +87,9 @@ void OnException(int param)
   printf("OnException()\n");
 }
 
-void OnBreakpoint(int Type, ptr Address, string &in Name, string &in Module)
+void OnBreakpoint(BPXTYPE Type, ptr Address, string &in Name, string &in Module)
 {
-  // TODO: Add BPTYPE enum
-  printf("OnBreakpoint(%d, 0x%llX, %s, %s)\n", Type, Address, Name, Module);
+  printf("OnBreakpoint(%d, 0x%p, %s, %s)\n", Type, Address, Name, Module);
 }
 
 void OnPauseDebug()

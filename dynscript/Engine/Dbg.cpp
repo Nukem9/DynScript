@@ -11,22 +11,8 @@ namespace Dbg
 		//
 		Engine->SetDefaultNamespace("");
 
-		AS_BEGIN_ENUM(SEGMENTREG)
-			AS_ADD_ENUM(SEG_DEFAULT)
-			AS_ADD_ENUM(SEG_ES)
-			AS_ADD_ENUM(SEG_DS)
-			AS_ADD_ENUM(SEG_FS)
-			AS_ADD_ENUM(SEG_GS)
-			AS_ADD_ENUM(SEG_CS)
-			AS_ADD_ENUM(SEG_SS)
-		AS_END_ENUM()
-
-		AS_BEGIN_ENUM(BPXTYPE)
-			AS_ADD_ENUM(bp_none)
-			AS_ADD_ENUM(bp_normal)
-			AS_ADD_ENUM(bp_hardware)
-			AS_ADD_ENUM(bp_memory)
-		AS_END_ENUM()
+		RegisterDefaultEnums(Engine);
+		RegisterDefaultStructs(Engine);
 
 		// Register all debugger variables and functions under "Dbg"
 		Engine->SetDefaultNamespace("Dbg");
@@ -40,6 +26,7 @@ namespace Dbg
 		// FUNCTIONS
 		//
 		VERIFY(Engine->RegisterGlobalFunction("ptr ValFromString(string &in Value)", asFUNCTION(asValFromString), asCALL_CDECL));
+		VERIFY(Engine->RegisterGlobalFunction("bool GetRegDump(REGDUMP &out Dump)", asFUNCTION(asGetRegDump), asCALL_CDECL));
 
 		VERIFY(Engine->RegisterGlobalFunction("bool MemWrite(ptr Address, ptr Buffer, uint Size, uint &out BytesWritten = 0)", asFUNCTION(asMemWrite), asCALL_CDECL));
 		VERIFY(Engine->RegisterGlobalFunction("bool MemRead(ptr Address, ptr Buffer, uint Size, uint &out BytesRead = 0)", asFUNCTION(asMemRead), asCALL_CDECL));
@@ -64,6 +51,14 @@ namespace Dbg
 	ULONG_PTR asValFromString(std::string &Value)
 	{
 		return DbgValFromString(Value.c_str());
+	}
+
+	bool asGetRegDump(REGDUMP *Dump)
+	{
+		if (!Dump)
+			return false;
+
+		return DbgGetRegDump(Dump);
 	}
 
 	bool asMemWrite(PVOID Address, PVOID Buffer, asUINT Size, asUINT *BytesWritten)

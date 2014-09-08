@@ -14,8 +14,7 @@
 
 namespace Dbg
 {
-[Prototype: const int    PluginHandle]
-[Prototype: const handle ProcessHandle]
+[Prototype: const int PluginHandle]
 
 [Prototype: ptr  ValFromString(string &in Value)]
 [Prototype: bool MemWrite(ptr Address, ptr Buffer, uint Size, uint &out BytesWritten = 0)]
@@ -32,6 +31,25 @@ namespace GUI
 [Prototype: bool AddMenuSeparator(int Handle)]
 [Prototype: bool ClearMenu(int Handle)]
 }
+
+[Enum: SEGMENTREG]
+[
+    SEG_DEFAULT,
+    SEG_ES,
+    SEG_DS,
+    SEG_FS,
+    SEG_GS,
+    SEG_CS,
+    SEG_SS
+]
+
+[Enum: BPXTYPE]
+[
+    bp_none=0,
+    bp_normal=1,
+    bp_hardware=2,
+    bp_memory=4
+]
 
 ///////////////////////////////
 // SCRIPT DEFINED PROTOTYPES //
@@ -85,8 +103,19 @@ bool IsBadWritePtr(ptr addr)
 {
   ptr val;
   
-  if (!Dbg::MemRead(addr, addressof(val), typesize("ptr")))
+  if (IsBadReadPtr(addr))
     return true;
     
   return !Dbg::MemWrite(addr, addressof(val), typesize("ptr"));
+}
+
+// AskYesNo
+[Parameter:   message, Message shown to the user]
+[Returns:     Yes: true, No: false]
+bool AskYesNo(string message)
+{
+  if (Dbg::CmdExec("msgyn \"" + message + "\""))
+    return Dbg::ValFromString("$result") == 1;
+    
+  return false;
 }

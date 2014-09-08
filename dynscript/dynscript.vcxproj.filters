@@ -152,10 +152,19 @@
     <ClInclude Include="Engine\Global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\FuncBinder.h">
+    <ClInclude Include="Engine\Binder\FuncBinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\EnumBinder.h">
+    <ClInclude Include="Engine\Binder\EnumBinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Binder\StructBinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Types\Enum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Types\Struct.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

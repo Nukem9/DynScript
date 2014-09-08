@@ -4,5 +4,10 @@
 #include "Global.h"
 #include "GUI.h"
 #include "Dbg.h"
-#include "FuncBinder.h"
-#include "EnumBinder.h"
+
+#include "Binder/FuncBinder.h"
+#include "Binder/EnumBinder.h"
+#include "Binder/StructBinder.h"
+
+#include "Types/Enum.h"
+#include "Types/Struct.h"

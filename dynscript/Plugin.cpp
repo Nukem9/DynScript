@@ -64,7 +64,7 @@ void DebugStringCallback(CBTYPE Type, PLUG_CB_OUTPUTDEBUGSTRING *Info)
 	char buffer[2048];
 	memset(buffer, 0, sizeof(buffer));
 
-	size_t maxlen = min(ARRAYSIZE(buffer), Info->DebugString->nDebugStringLength);
+	size_t maxlen = min(ARRAYSIZE(buffer) - 1, Info->DebugString->nDebugStringLength);
 
 	if (Info->DebugString->fUnicode)
 	{
@@ -200,5 +200,5 @@ DLL_EXPORT void plugsetup(PLUG_SETUPSTRUCT *SetupStruct)
 	_plugin_menuaddentry(hMenu, 0, "Load script");
 
 	// void OnPluginSetup(int DebuggerVersion, int PluginVersion)
-	asExecuteDynamic(def.asOnPluginSetup, 20, PLUGIN_VERSION);
+	asExecuteDynamic(def.asOnPluginSetup, DBG_VERSION, PLUGIN_VERSION);
 }

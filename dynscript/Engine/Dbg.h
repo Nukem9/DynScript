@@ -8,6 +8,7 @@ namespace Dbg
 
 	// AngelScript functions
 	ULONG_PTR asValFromString(std::string &Value);
+	bool asGetRegDump(REGDUMP *Dump);
 
 	bool asMemWrite(PVOID Address, PVOID Buffer, asUINT Size, asUINT *BytesWritten);
 	bool asMemRead(PVOID Address, PVOID Buffer, asUINT Size, asUINT *BytesRead);

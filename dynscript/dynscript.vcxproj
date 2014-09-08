@@ -118,11 +118,14 @@
     <ClInclude Include="angelscript\source\as_typeinfo.h" />
     <ClInclude Include="angelscript\source\as_variablescope.h" />
     <ClInclude Include="Engine\Dbg.h" />
-    <ClInclude Include="Engine\EnumBinder.h" />
-    <ClInclude Include="Engine\FuncBinder.h" />
+    <ClInclude Include="Engine\Binder\EnumBinder.h" />
+    <ClInclude Include="Engine\Binder\FuncBinder.h" />
     <ClInclude Include="Engine\Global.h" />
     <ClInclude Include="Engine\GUI.h" />
     <ClInclude Include="Engine\stdafx.h" />
+    <ClInclude Include="Engine\Binder\StructBinder.h" />
+    <ClInclude Include="Engine\Types\Enum.h" />
+    <ClInclude Include="Engine\Types\Struct.h" />
     <ClInclude Include="Plugin.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="stdafx.h" />
