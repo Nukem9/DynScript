@@ -1,0 +1,62 @@
+#pragma once
+
+namespace Script
+{
+	void FORCEINLINE RegisterDefaultEnums(asIScriptEngine *Engine)
+	{
+		// DBGSTATE
+		AS_BEGIN_ENUM(DBGSTATE)
+			AS_ADD_ENUM(initialized)
+			AS_ADD_ENUM(paused)
+			AS_ADD_ENUM(running)
+			AS_ADD_ENUM(stopped)
+		AS_END_ENUM()
+
+		// SEGMENTREG
+		AS_BEGIN_ENUM(SEGMENTREG)
+			AS_ADD_ENUM(SEG_DEFAULT)
+			AS_ADD_ENUM(SEG_ES)
+			AS_ADD_ENUM(SEG_DS)
+			AS_ADD_ENUM(SEG_FS)
+			AS_ADD_ENUM(SEG_GS)
+			AS_ADD_ENUM(SEG_CS)
+			AS_ADD_ENUM(SEG_SS)
+		AS_END_ENUM()
+
+		// ADDRINFOFLAGS
+		AS_BEGIN_ENUM(ADDRINFOFLAGS)
+			AS_ADD_ENUM(flagmodule)
+			AS_ADD_ENUM(flaglabel)
+			AS_ADD_ENUM(flagcomment)
+			AS_ADD_ENUM(flagbookmark)
+			AS_ADD_ENUM(flagfunction)
+			AS_ADD_ENUM(flagloop)
+		AS_END_ENUM()
+
+		// BPXTYPE
+		AS_BEGIN_ENUM(BPXTYPE)
+			AS_ADD_ENUM(bp_none)
+			AS_ADD_ENUM(bp_normal)
+			AS_ADD_ENUM(bp_hardware)
+			AS_ADD_ENUM(bp_memory)
+		AS_END_ENUM()
+
+		// FUNCTYPE
+		AS_BEGIN_ENUM(FUNCTYPE)
+			AS_ADD_ENUM(FUNC_NONE)
+			AS_ADD_ENUM(FUNC_BEGIN)
+			AS_ADD_ENUM(FUNC_MIDDLE)
+			AS_ADD_ENUM(FUNC_END)
+			AS_ADD_ENUM(FUNC_SINGLE)
+		AS_END_ENUM()
+
+		// LOOPTYPE
+		AS_BEGIN_ENUM(LOOPTYPE)
+			AS_ADD_ENUM(LOOP_NONE)
+			AS_ADD_ENUM(LOOP_BEGIN)
+			AS_ADD_ENUM(LOOP_MIDDLE)
+			AS_ADD_ENUM(LOOP_ENTRY)
+			AS_ADD_ENUM(LOOP_END)
+		AS_END_ENUM()
+	}
+}
