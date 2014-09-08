@@ -12,6 +12,7 @@ namespace Dbg
 		Engine->SetDefaultNamespace("");
 
 		RegisterDefaultEnums(Engine);
+		RegisterWindowsStructs(Engine);
 		RegisterDefaultStructs(Engine);
 
 		// Register all debugger variables and functions under "Dbg"

@@ -58,5 +58,40 @@ namespace Script
 			AS_ADD_ENUM(LOOP_ENTRY)
 			AS_ADD_ENUM(LOOP_END)
 		AS_END_ENUM()
+
+		// DBGMSG
+		// SCRIPTLINETYPE
+		// SCRIPTBRANCHTYPE
+
+		// DISASM_INSTRTYPE
+		AS_BEGIN_ENUM(DISASM_INSTRTYPE)
+			AS_ADD_ENUM(instr_normal)
+			AS_ADD_ENUM(instr_branch)
+			AS_ADD_ENUM(instr_stack)
+		AS_END_ENUM()
+
+		// DISASM_ARGTYPE
+		AS_BEGIN_ENUM(DISASM_ARGTYPE)
+			AS_ADD_ENUM(arg_normal)
+			AS_ADD_ENUM(arg_memory)
+		AS_END_ENUM()
+
+		// DISASM_ARGTYPE
+		AS_BEGIN_ENUM(STRING_TYPE)
+			AS_ADD_ENUM(str_none)
+			AS_ADD_ENUM(str_ascii)
+			AS_ADD_ENUM(str_unicode)
+		AS_END_ENUM()
+
+		// THREADPRIORITY
+		// THREADWAITREASON
+
+		// DISASM_ARGTYPE
+		AS_BEGIN_ENUM(MEMORY_SIZE)
+			AS_ADD_ENUM(size_byte)
+			AS_ADD_ENUM(size_word)
+			AS_ADD_ENUM(size_dword)
+			AS_ADD_ENUM(size_qword)
+		AS_END_ENUM()
 	}
 }

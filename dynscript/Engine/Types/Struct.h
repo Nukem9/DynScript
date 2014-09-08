@@ -67,4 +67,18 @@ namespace Script
 			AS_ADD_STRUCT(ptr, dr7)
 		AS_END_STRUCT()
 	}
+
+	void FORCEINLINE RegisterWindowsStructs(asIScriptEngine *Engine)
+	{
+		// MEMORY_BASIC_INFORMATION
+		AS_BEGIN_STRUCT(MEMORY_BASIC_INFORMATION)
+			AS_ADD_STRUCT(ptr,   BaseAddress);
+			AS_ADD_STRUCT(ptr,   AllocationBase);
+			AS_ADD_STRUCT(dword, AllocationProtect);
+			AS_ADD_STRUCT(ptr,   RegionSize);
+			AS_ADD_STRUCT(dword, State);
+			AS_ADD_STRUCT(dword, Protect);
+			AS_ADD_STRUCT(dword, Type);
+		AS_END_STRUCT()
+	}
 }
