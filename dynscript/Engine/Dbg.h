@@ -7,8 +7,8 @@ namespace Dbg
 	void Init(asIScriptEngine *Engine);
 
 	// AngelScript functions
-	ULONG_PTR asValFromString(std::string &Value);
-	bool asGetRegDump(REGDUMP *Dump);
+	std::string asDbgInit();
+	void asDbgExit();
 
 	bool asMemWrite(PVOID Address, PVOID Buffer, asUINT Size, asUINT *BytesWritten);
 	bool asMemRead(PVOID Address, PVOID Buffer, asUINT Size, asUINT *BytesRead);
@@ -26,6 +26,21 @@ namespace Dbg
 
 	bool asGetLabelAt(ULONG_PTR Address, SEGMENTREG Segment, std::string *Text);
 	bool asSetLabelAt(ULONG_PTR Address, std::string &Text);
+
+	bool asGetBookmarkAt(ULONG_PTR Address);
+	bool asSetBookmarkAt(ULONG_PTR Address, bool Enable);
+
+	bool asGetModuleAt(ULONG_PTR Address, std::string *Module);
+	BPXTYPE asGetBpxTypeAt(ULONG_PTR Address);
+
+	ULONG_PTR asValFromString(std::string &Value);
+	bool asGetRegDump(REGDUMP *Dump);
+
+	bool asMemIsValidReadPtr(ULONG_PTR Address);
+
+	FUNCTYPE asGetFunctionTypeAt(ULONG_PTR Address);
+	LOOPTYPE asGetLoopTypeAt(ULONG_PTR Address, int Depth);
+	ULONG_PTR asGetBranchDestination(ULONG_PTR Address);
 
 	asBYTE asByteAt(ULONG_PTR Address);
 	asWORD asWordAt(ULONG_PTR Address);
