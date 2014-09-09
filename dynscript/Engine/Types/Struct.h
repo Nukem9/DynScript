@@ -2,8 +2,78 @@
 
 namespace Script
 {
+	template <typename Function>
+	struct function_traits
+		: public function_traits < decltype(&Function::operator()) >
+	{};
+
+	template <typename ClassType, typename ReturnType, typename... Args>
+	struct function_traits < ReturnType(ClassType::*)(Args...) const >
+	{
+		typedef ReturnType(*pointer)(Args...);
+		typedef std::function<ReturnType(Args...)> function;
+	};
+
+	template <typename Function>
+	typename function_traits<Function>::pointer
+		to_function_pointer(Function& lambda)
+	{
+		return static_cast<typename function_traits<Function>::pointer>(lambda);
+	}
+
+	template <typename Function>
+	typename function_traits<Function>::function
+		to_function(Function& lambda)
+	{
+		return static_cast<typename function_traits<Function>::function>(lambda);
+	}
+
 	void FORCEINLINE RegisterDefaultStructs(asIScriptEngine *Engine)
 	{
+		// MEMPAGE
+		AS_BEGIN_STRUCT(MEMPAGE)
+			AS_ADD_STRUCT(MEMORY_BASIC_INFORMATION, mbi)
+			AS_ADD_STRUCT_ACCESS(string,            info, { return std::string(Obj->info); })
+		AS_END_STRUCT()
+
+		// MEMMAP
+		AS_BEGIN_STRUCT(MEMMAP)
+			AS_ADD_STRUCT(int,            count)
+			AS_ADD_STRUCT_ARRAY(MEMPAGE&, page,
+			-> MEMPAGE*
+			{
+				if (Index > (asUINT)Obj->count)
+					return nullptr;
+
+				return &Obj->page[Index];
+			})
+		AS_END_STRUCT()
+
+		// BRIDGEBP
+		AS_BEGIN_STRUCT(BRIDGEBP)
+			AS_ADD_STRUCT(BPXTYPE,       type)
+			AS_ADD_STRUCT(ptr,           addr)
+			AS_ADD_STRUCT(bool,          enabled)
+			AS_ADD_STRUCT(bool,          singleshoot)
+			AS_ADD_STRUCT(bool,          active)
+			AS_ADD_STRUCT_ACCESS(string, name, { return std::string(Obj->name); })
+			AS_ADD_STRUCT_ACCESS(string, mod,  { return std::string(Obj->mod);  })
+			AS_ADD_STRUCT(word,          slot)
+		AS_END_STRUCT()
+
+		// BPMAP
+		AS_BEGIN_STRUCT(BPMAP)
+			AS_ADD_STRUCT(int,          count)
+			AS_ADD_STRUCT_ARRAY(BPMAP&, bp,
+			-> BRIDGEBP*
+			{
+				if (Index > (asUINT)Obj->count)
+				return nullptr;
+
+				return &Obj->bp[Index];
+			})
+		AS_END_STRUCT()
+
 		// FUNCTION
 		AS_BEGIN_STRUCT(FUNCTION)
 			AS_ADD_STRUCT(ptr, start)
@@ -16,6 +86,32 @@ namespace Script
 			AS_ADD_STRUCT(ptr, start)
 			AS_ADD_STRUCT(ptr, end)
 		AS_END_STRUCT()
+
+		// ADDRINFO
+		AS_BEGIN_STRUCT(ADDRINFO)
+			AS_ADD_STRUCT(int,           flags)
+			AS_ADD_STRUCT_ACCESS(string, module,  { return std::string(Obj->module);  })
+			AS_ADD_STRUCT_ACCESS(string, label,   { return std::string(Obj->label);   })
+			AS_ADD_STRUCT_ACCESS(string, comment, { return std::string(Obj->comment); })
+			AS_ADD_STRUCT(bool,          isbookmark)
+			AS_ADD_STRUCT(FUNCTION,      function)
+			AS_ADD_STRUCT(LOOP,          loop)
+		AS_END_STRUCT()
+
+		// SYMBOLINFO
+		AS_BEGIN_STRUCT(SYMBOLINFO)
+			AS_ADD_STRUCT(ptr,           addr)
+			AS_ADD_STRUCT_ACCESS(string, decoratedSymbol,   { return std::string(Obj->decoratedSymbol);   })
+			AS_ADD_STRUCT_ACCESS(string, undecoratedSymbol, { return std::string(Obj->undecoratedSymbol); })
+		AS_END_STRUCT()
+
+		// SYMBOLMODULEINFO
+		AS_BEGIN_STRUCT(SYMBOLMODULEINFO)
+			AS_ADD_STRUCT(ptr,           base)
+			AS_ADD_STRUCT_ACCESS(string, name, { return std::string(Obj->name); })
+		AS_END_STRUCT()
+
+		// SYMBOLCBINFO !!TODO!!
 
 		// FLAGS
 		AS_BEGIN_STRUCT(FLAGS)
@@ -66,19 +162,69 @@ namespace Script
 			AS_ADD_STRUCT(ptr, dr6)
 			AS_ADD_STRUCT(ptr, dr7)
 		AS_END_STRUCT()
+
+		// DISASM_ARG
+		AS_BEGIN_STRUCT(DISASM_ARG)
+			AS_ADD_STRUCT(DISASM_ARGTYPE, type)
+			AS_ADD_STRUCT(SEGMENTREG,     segment)
+			AS_ADD_STRUCT_ACCESS(string,  mnemonic, { return std::string(Obj->mnemonic); })
+			AS_ADD_STRUCT(ptr,            constant)
+			AS_ADD_STRUCT(ptr,            value)
+			AS_ADD_STRUCT(ptr,            memvalue)
+		AS_END_STRUCT()
+
+		// DISASM_INSTR
+		AS_BEGIN_STRUCT(DISASM_INSTR)
+		AS_ADD_STRUCT_ACCESS(string,     instruction, { return std::string(Obj->instruction); })
+		AS_ADD_STRUCT(DISASM_INSTRTYPE,  type)
+		AS_ADD_STRUCT(int,               argcount)
+		AS_ADD_STRUCT(int,               instr_size)
+		AS_ADD_STRUCT_ARRAY(DISASM_ARG&, arg,
+		-> DISASM_ARG*
+		{
+			if (Index > ARRAYSIZE(Obj->arg))
+				return nullptr;
+
+			return &Obj->arg[Index];
+		})
+		AS_END_STRUCT()
 	}
 
 	void FORCEINLINE RegisterWindowsStructs(asIScriptEngine *Engine)
 	{
 		// MEMORY_BASIC_INFORMATION
 		AS_BEGIN_STRUCT(MEMORY_BASIC_INFORMATION)
-			AS_ADD_STRUCT(ptr,   BaseAddress);
-			AS_ADD_STRUCT(ptr,   AllocationBase);
-			AS_ADD_STRUCT(dword, AllocationProtect);
-			AS_ADD_STRUCT(ptr,   RegionSize);
-			AS_ADD_STRUCT(dword, State);
-			AS_ADD_STRUCT(dword, Protect);
-			AS_ADD_STRUCT(dword, Type);
+			AS_ADD_STRUCT(ptr,   BaseAddress)
+			AS_ADD_STRUCT(ptr,   AllocationBase)
+			AS_ADD_STRUCT(dword, AllocationProtect)
+			AS_ADD_STRUCT(ptr,   RegionSize)
+			AS_ADD_STRUCT(dword, State)
+			AS_ADD_STRUCT(dword, Protect)
+			AS_ADD_STRUCT(dword, Type)
+		AS_END_STRUCT()
+
+		// EXCEPTION_RECORD
+		AS_BEGIN_STRUCT(EXCEPTION_RECORD)
+			AS_ADD_STRUCT(dword,     ExceptionCode)
+			AS_ADD_STRUCT(dword,     ExceptionFlags)
+			AS_ADD_STRUCT_ACCESS(EXCEPTION_RECORD&, ExceptionRecord, { return Obj->ExceptionRecord; })
+			AS_ADD_STRUCT(ptr,       ExceptionAddress)
+			AS_ADD_STRUCT(dword,     NumberParameters)
+			AS_ADD_STRUCT_ARRAY(ptr, ExceptionInformation,
+			-> ULONG_PTR
+			{
+				if (Index > ARRAYSIZE(Obj->ExceptionInformation))
+					return 0;
+
+				return Obj->ExceptionInformation[Index];
+			})
+		AS_END_STRUCT()
+
+		// CREATE_THREAD_DEBUG_INFO
+		AS_BEGIN_STRUCT(CREATE_THREAD_DEBUG_INFO)
+			AS_ADD_STRUCT(handle, hThread)
+			AS_ADD_STRUCT(ptr,    lpThreadLocalBase)
+			AS_ADD_STRUCT(ptr,    lpStartAddress)
 		AS_END_STRUCT()
 	}
 }
