@@ -16,24 +16,26 @@ namespace Script
 
 	template <typename Function>
 	typename function_traits<Function>::pointer
-		to_function_pointer(Function& lambda)
+	to_function_pointer(Function& lambda)
 	{
 		return static_cast<typename function_traits<Function>::pointer>(lambda);
 	}
 
 	template <typename Function>
 	typename function_traits<Function>::function
-		to_function(Function& lambda)
+	to_function(Function& lambda)
 	{
 		return static_cast<typename function_traits<Function>::function>(lambda);
 	}
 
 	void FORCEINLINE RegisterDefaultStructs(asIScriptEngine *Engine)
 	{
+		using namespace std;
+
 		// MEMPAGE
 		AS_BEGIN_STRUCT(MEMPAGE)
 			AS_ADD_STRUCT(MEMORY_BASIC_INFORMATION, mbi)
-			AS_ADD_STRUCT_ACCESS(string,            info, { return std::string(Obj->info); })
+			AS_ADD_STRUCT_ACCESS(string,            info, STR_GET(info), STR_SET(info))
 		AS_END_STRUCT()
 
 		// MEMMAP
@@ -56,8 +58,8 @@ namespace Script
 			AS_ADD_STRUCT(bool,          enabled)
 			AS_ADD_STRUCT(bool,          singleshoot)
 			AS_ADD_STRUCT(bool,          active)
-			AS_ADD_STRUCT_ACCESS(string, name, { return std::string(Obj->name); })
-			AS_ADD_STRUCT_ACCESS(string, mod,  { return std::string(Obj->mod);  })
+			AS_ADD_STRUCT_ACCESS(string, name, STR_GET(name), STR_SET(name))
+			AS_ADD_STRUCT_ACCESS(string, mod,  STR_GET(mod),  STR_SET(mod))
 			AS_ADD_STRUCT(word,          slot)
 		AS_END_STRUCT()
 
@@ -90,9 +92,9 @@ namespace Script
 		// ADDRINFO
 		AS_BEGIN_STRUCT(ADDRINFO)
 			AS_ADD_STRUCT(int,           flags)
-			AS_ADD_STRUCT_ACCESS(string, module,  { return std::string(Obj->module);  })
-			AS_ADD_STRUCT_ACCESS(string, label,   { return std::string(Obj->label);   })
-			AS_ADD_STRUCT_ACCESS(string, comment, { return std::string(Obj->comment); })
+			AS_ADD_STRUCT_ACCESS(string, module,  STR_GET(module),  STR_SET(module))
+			AS_ADD_STRUCT_ACCESS(string, label,   STR_GET(label),   STR_SET(label))
+			AS_ADD_STRUCT_ACCESS(string, comment, STR_GET(comment), STR_SET(comment))
 			AS_ADD_STRUCT(bool,          isbookmark)
 			AS_ADD_STRUCT(FUNCTION,      function)
 			AS_ADD_STRUCT(LOOP,          loop)
@@ -101,14 +103,14 @@ namespace Script
 		// SYMBOLINFO
 		AS_BEGIN_STRUCT(SYMBOLINFO)
 			AS_ADD_STRUCT(ptr,           addr)
-			AS_ADD_STRUCT_ACCESS(string, decoratedSymbol,   { return std::string(Obj->decoratedSymbol);   })
-			AS_ADD_STRUCT_ACCESS(string, undecoratedSymbol, { return std::string(Obj->undecoratedSymbol); })
+			AS_ADD_STRUCT_ACCESS(string, decoratedSymbol,   STR_GET(decoratedSymbol),   { assert(false); })
+			AS_ADD_STRUCT_ACCESS(string, undecoratedSymbol, STR_GET(undecoratedSymbol), { assert(false); })
 		AS_END_STRUCT()
 
 		// SYMBOLMODULEINFO
 		AS_BEGIN_STRUCT(SYMBOLMODULEINFO)
 			AS_ADD_STRUCT(ptr,           base)
-			AS_ADD_STRUCT_ACCESS(string, name, { return std::string(Obj->name); })
+			AS_ADD_STRUCT_ACCESS(string, name, STR_GET(name), STR_SET(name))
 		AS_END_STRUCT()
 
 		// SYMBOLCBINFO !!TODO!!
@@ -128,46 +130,46 @@ namespace Script
 
 		// REGDUMP
 		AS_BEGIN_STRUCT(REGDUMP)
-			AS_ADD_STRUCT(ptr, cax)
-			AS_ADD_STRUCT(ptr, ccx)
-			AS_ADD_STRUCT(ptr, cdx)
-			AS_ADD_STRUCT(ptr, cbx)
-			AS_ADD_STRUCT(ptr, csp)
-			AS_ADD_STRUCT(ptr, cbp)
-			AS_ADD_STRUCT(ptr, csi)
-			AS_ADD_STRUCT(ptr, cdi)
+			AS_ADD_STRUCT(ptr,   cax)
+			AS_ADD_STRUCT(ptr,   ccx)
+			AS_ADD_STRUCT(ptr,   cdx)
+			AS_ADD_STRUCT(ptr,   cbx)
+			AS_ADD_STRUCT(ptr,   csp)
+			AS_ADD_STRUCT(ptr,   cbp)
+			AS_ADD_STRUCT(ptr,   csi)
+			AS_ADD_STRUCT(ptr,   cdi)
 #ifdef _WIN64
-			AS_ADD_STRUCT(ptr, r8)
-			AS_ADD_STRUCT(ptr, r9)
-			AS_ADD_STRUCT(ptr, r10)
-			AS_ADD_STRUCT(ptr, r11)
-			AS_ADD_STRUCT(ptr, r12)
-			AS_ADD_STRUCT(ptr, r13)
-			AS_ADD_STRUCT(ptr, r14)
-			AS_ADD_STRUCT(ptr, r15)
+			AS_ADD_STRUCT(ptr,   r8)
+			AS_ADD_STRUCT(ptr,   r9)
+			AS_ADD_STRUCT(ptr,   r10)
+			AS_ADD_STRUCT(ptr,   r11)
+			AS_ADD_STRUCT(ptr,   r12)
+			AS_ADD_STRUCT(ptr,   r13)
+			AS_ADD_STRUCT(ptr,   r14)
+			AS_ADD_STRUCT(ptr,   r15)
 #endif
-			AS_ADD_STRUCT(ptr, cip)
-			AS_ADD_STRUCT(uint, eflags)
+			AS_ADD_STRUCT(ptr,   cip)
+			AS_ADD_STRUCT(uint,  eflags)
 			AS_ADD_STRUCT(FLAGS, flags)
-			AS_ADD_STRUCT(word, gs)
-			AS_ADD_STRUCT(word, fs)
-			AS_ADD_STRUCT(word, es)
-			AS_ADD_STRUCT(word, ds)
-			AS_ADD_STRUCT(word, cs)
-			AS_ADD_STRUCT(word, ss)
-			AS_ADD_STRUCT(ptr, dr0)
-			AS_ADD_STRUCT(ptr, dr1)
-			AS_ADD_STRUCT(ptr, dr2)
-			AS_ADD_STRUCT(ptr, dr3)
-			AS_ADD_STRUCT(ptr, dr6)
-			AS_ADD_STRUCT(ptr, dr7)
+			AS_ADD_STRUCT(word,  gs)
+			AS_ADD_STRUCT(word,  fs)
+			AS_ADD_STRUCT(word,  es)
+			AS_ADD_STRUCT(word,  ds)
+			AS_ADD_STRUCT(word,  cs)
+			AS_ADD_STRUCT(word,  ss)
+			AS_ADD_STRUCT(ptr,   dr0)
+			AS_ADD_STRUCT(ptr,   dr1)
+			AS_ADD_STRUCT(ptr,   dr2)
+			AS_ADD_STRUCT(ptr,   dr3)
+			AS_ADD_STRUCT(ptr,   dr6)
+			AS_ADD_STRUCT(ptr,   dr7)
 		AS_END_STRUCT()
 
 		// DISASM_ARG
 		AS_BEGIN_STRUCT(DISASM_ARG)
 			AS_ADD_STRUCT(DISASM_ARGTYPE, type)
 			AS_ADD_STRUCT(SEGMENTREG,     segment)
-			AS_ADD_STRUCT_ACCESS(string,  mnemonic, { return std::string(Obj->mnemonic); })
+			AS_ADD_STRUCT_ACCESS(string,  mnemonic, STR_GET(mnemonic), STR_SET(mnemonic))
 			AS_ADD_STRUCT(ptr,            constant)
 			AS_ADD_STRUCT(ptr,            value)
 			AS_ADD_STRUCT(ptr,            memvalue)
@@ -175,18 +177,18 @@ namespace Script
 
 		// DISASM_INSTR
 		AS_BEGIN_STRUCT(DISASM_INSTR)
-		AS_ADD_STRUCT_ACCESS(string,     instruction, { return std::string(Obj->instruction); })
-		AS_ADD_STRUCT(DISASM_INSTRTYPE,  type)
-		AS_ADD_STRUCT(int,               argcount)
-		AS_ADD_STRUCT(int,               instr_size)
-		AS_ADD_STRUCT_ARRAY(DISASM_ARG&, arg,
-		-> DISASM_ARG*
-		{
-			if (Index > ARRAYSIZE(Obj->arg))
-				return nullptr;
+			AS_ADD_STRUCT_ACCESS(string,     instruction, STR_GET(instruction), STR_SET(instruction))
+			AS_ADD_STRUCT(DISASM_INSTRTYPE,  type)
+			AS_ADD_STRUCT(int,               argcount)
+			AS_ADD_STRUCT(int,               instr_size)
+			AS_ADD_STRUCT_ARRAY(DISASM_ARG&, arg,
+			-> DISASM_ARG*
+			{
+				if (Index > ARRAYSIZE(Obj->arg))
+					return nullptr;
 
-			return &Obj->arg[Index];
-		})
+				return &Obj->arg[Index];
+			})
 		AS_END_STRUCT()
 	}
 
@@ -207,7 +209,7 @@ namespace Script
 		AS_BEGIN_STRUCT(EXCEPTION_RECORD)
 			AS_ADD_STRUCT(dword,     ExceptionCode)
 			AS_ADD_STRUCT(dword,     ExceptionFlags)
-			AS_ADD_STRUCT_ACCESS(EXCEPTION_RECORD&, ExceptionRecord, { return Obj->ExceptionRecord; })
+			AS_ADD_STRUCT_ACCESS_MOD(EXCEPTION_RECORD, ExceptionRecord, "&", { return Obj->ExceptionRecord; }, { Obj->ExceptionRecord = &Val; })
 			AS_ADD_STRUCT(ptr,       ExceptionAddress)
 			AS_ADD_STRUCT(dword,     NumberParameters)
 			AS_ADD_STRUCT_ARRAY(ptr, ExceptionInformation,

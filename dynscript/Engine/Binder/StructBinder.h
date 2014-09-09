@@ -1,24 +1,46 @@
 #pragma once
 
-#define AS_BEGIN_STRUCT(decl)		{ \
-									static const char *__zname = #decl; \
-									using __zdecl = decl; \
+#define asLAMBDA(x) asFUNCTION(to_function_pointer((x)))
+#define STR_GET(x) { return std::string(Obj->x); }
+#define STR_SET(x) { strcpy_s(Obj->x, Val.c_str()); }
+
+#define AS_BEGIN_STRUCT(decl)		{																					\
+									static const char *__zname = #decl;													\
+									using objDecl = decl;																\
 									VERIFY(Engine->RegisterObjectType(#decl, sizeof(decl), asOBJ_VALUE | asOBJ_POD));
+
 #define AS_END_STRUCT()				}
 
-#define AS_ADD_STRUCT(type, member)					VERIFY(Engine->RegisterObjectProperty(																	\
-																					__zname,																\
-																					#type " " #member,														\
-																					asOFFSET(__zdecl, member)));
+#define AS_ADD_STRUCT(type, member)							VERIFY(Engine->RegisterObjectProperty(	\
+																__zname,							\
+																#type " " #member,					\
+																asOFFSET(objDecl, member)));
 
-#define AS_ADD_STRUCT_ARRAY(type, member, func)		VERIFY(Engine->RegisterObjectMethod(																	\
-																					__zname,																\
-																					#type " get_" #member "(uint)",											\
-																					asFUNCTION(to_function_pointer([](asUINT Index, __zdecl *Obj) func)),	\
-																					asCALL_CDECL_OBJLAST));
+//
+// READ from a struct array:
+// val = struct.array[index];
+//
+#define AS_ADD_STRUCT_ARRAY(type, member, func)				VERIFY(Engine->RegisterObjectMethod(										\
+																__zname,																\
+																#type " get_" #member "(uint)",											\
+																asFUNCTION(to_function_pointer([](asUINT Index, objDecl *Obj) func)),	\
+																asCALL_CDECL_OBJLAST));
 
-#define AS_ADD_STRUCT_ACCESS(type, member, func)	VERIFY(Engine->RegisterObjectMethod(																	\
-																					__zname,																\
-																					#type " get_" #member "()",												\
-																					asFUNCTION(to_function_pointer([](asUINT Index, __zdecl *Obj) func)),	\
-																					asCALL_CDECL_OBJLAST));
+//
+// READ from and WRITE to a struct member:
+// val = struct.member;
+// struct.member = val;
+//
+#define AS_ADD_STRUCT_ACCESS(type, member, readf, writef)	AS_ADD_STRUCT_ACCESS_MOD(type, member, "", readf, writef)
+
+#define AS_ADD_STRUCT_ACCESS_MOD(type, member, mod, readf, writef)	\
+															VERIFY(Engine->RegisterObjectMethod(			\
+																__zname,									\
+																#type mod " get_" #member "()",			\
+																asLAMBDA([](objDecl *Obj) readf),			\
+																asCALL_CDECL_OBJLAST));						\
+															VERIFY(Engine->RegisterObjectMethod(			\
+																__zname,									\
+																"void set_" #member "(" #type " &in)",		\
+																asLAMBDA([](type &Val, objDecl *Obj) writef), \
+																asCALL_CDECL_OBJLAST));
