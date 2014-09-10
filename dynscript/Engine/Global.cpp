@@ -33,6 +33,7 @@ namespace Global
 		// FUNCTIONS
 		//
 		VERIFY(Engine->RegisterGlobalFunction("string typeof(?&in)", asFUNCTION(asTypeof), asCALL_GENERIC));
+		VERIFY(Engine->RegisterGlobalFunction("uint sizeof(?&in)", asFUNCTION(asSizeof), asCALL_GENERIC));
 		VERIFY(Engine->RegisterGlobalFunction("uint typesize(string &in Type)", asFUNCTION(asTypesize), asCALL_GENERIC));
 		VERIFY(Engine->RegisterGlobalFunction("ptr addressof(?&in)", asFUNCTION(asAddressof), asCALL_GENERIC));
 
@@ -46,6 +47,15 @@ namespace Global
 		std::string typeName(Gen->GetEngine()->GetTypeDeclaration(Gen->GetArgTypeId(0)));
 
 		Gen->SetReturnObject(&typeName);
+	}
+
+	void asSizeof(asIScriptGeneric *Gen)
+	{
+		// Variable type -> variable id
+		int typeId = Gen->GetArgTypeId(0);
+
+		// Set the return value to the type size
+		Gen->SetReturnDWord(Gen->GetEngine()->GetSizeOfPrimitiveType(typeId));
 	}
 
 	void asTypesize(asIScriptGeneric *Gen)
