@@ -22,22 +22,26 @@ void StopDebugCallback(CBTYPE Type, PLUG_CB_STOPDEBUG *Info)
 
 void CreateProcessCallback(CBTYPE Type, PLUG_CB_CREATEPROCESS *Info)
 {
+	// void OnCreateProcess(CREATE_PROCESS_DEBUG_INFO &in Info, IMAGEHLP_MODULE64 &in Module, PROCESS_INFORMATION &in ProcessInfo)
+	asExecuteDynamic(def.asOnCreateProcess, (OBJECT)Info->CreateProcessInfo, (OBJECT)Info->modInfo, (OBJECT)Info->fdProcessInfo);
 }
 
 void ExitProcessCallback(CBTYPE Type, PLUG_CB_EXITPROCESS *Info)
 {
-	// void OnExitProcess(uint ExitCode)
-	asExecuteDynamic(def.asOnExitProcess, Info->ExitProcess->dwExitCode);
+	// void OnExitProcess(EXIT_PROCESS_DEBUG_INFO &in Info)
+	asExecuteDynamic(def.asOnExitProcess, (OBJECT)Info->ExitProcess);
 }
 
 void CreateThreadCallback(CBTYPE Type, PLUG_CB_CREATETHREAD *Info)
 {
+	// void OnCreateThread(CREATE_THREAD_DEBUG_INFO &in Info, uint ThreadId)
+	asExecuteDynamic(def.asOnCreateThread, (OBJECT)Info->CreateThread, Info->dwThreadId);
 }
 
 void ExitThreadCallback(CBTYPE Type, PLUG_CB_EXITTHREAD *Info)
 {
-	// void OnExitThread(uint ThreadId, uint ExitCode)
-	asExecuteDynamic(def.asOnExitThread, Info->dwThreadId, Info->ExitThread->dwExitCode);
+	// void OnExitThread(EXIT_THREAD_DEBUG_INFO &in Info, uint ThreadId)
+	asExecuteDynamic(def.asOnExitThread, (OBJECT)Info->ExitThread, Info->dwThreadId);
 }
 
 void SystemBreakpointCallback(CBTYPE Type, PLUG_CB_SYSTEMBREAKPOINT *Info)
@@ -48,12 +52,16 @@ void SystemBreakpointCallback(CBTYPE Type, PLUG_CB_SYSTEMBREAKPOINT *Info)
 
 void LoadDllCallback(CBTYPE Type, PLUG_CB_LOADDLL *Info)
 {
+	std::string modname(Info->modname);
+
+	// void OnLoadDll(LOAD_DLL_DEBUG_INFO &in Info, IMAGEHLP_MODULE64 &in Module, string &in ModName)
+	asExecuteDynamic(def.asOnLoadDll, (OBJECT)Info->LoadDll, (OBJECT)Info->modInfo, (OBJECT)&modname);
 }
 
 void UnloadDllCallback(CBTYPE Type, PLUG_CB_UNLOADDLL *Info)
 {
-	// void OnUnloadDll(ptr DllBase)
-	asExecuteDynamic(def.asOnUnloadDll, (ULONG_PTR)Info->UnloadDll->lpBaseOfDll);
+	// void OnUnloadDll(UNLOAD_DLL_DEBUG_INFO &in Info)
+	asExecuteDynamic(def.asOnUnloadDll, (OBJECT)Info->UnloadDll);
 }
 
 void DebugStringCallback(CBTYPE Type, PLUG_CB_OUTPUTDEBUGSTRING *Info)
@@ -83,21 +91,20 @@ void DebugStringCallback(CBTYPE Type, PLUG_CB_OUTPUTDEBUGSTRING *Info)
 	//
 	std::string message(buffer);
 
-	// void OnOutputDebugString(string &in Message)
-	asExecuteDynamic(def.asOnOutputDebugString, (OBJECT)&message);
+	// void OnOutputDebugString(OUTPUT_DEBUG_STRING_INFO &in Info, string &in Message)
+	asExecuteDynamic(def.asOnOutputDebugString, (OBJECT)Info->DebugString, (OBJECT)&message);
 }
 
 void ExceptionCallback(CBTYPE Type, PLUG_CB_EXCEPTION *Info)
 {
+	// void OnException(EXCEPTION_DEBUG_INFO &in Info)
+	asExecuteDynamic(def.asOnException, (OBJECT)Info->Exception);
 }
 
 void BreakpointCallback(CBTYPE Type, PLUG_CB_BREAKPOINT *Info)
 {
-	std::string name(Info->breakpoint->name);
-	std::string mod(Info->breakpoint->mod);
-
-	// void OnBreakpoint(BPXTYPE Type, ptr Address, string &in Name, string &in Module)
-	asExecuteDynamic(def.asOnBreakpoint, (int)Info->breakpoint->type, Info->breakpoint->addr, (OBJECT)&name, (OBJECT)&mod);
+	// void OnBreakpoint(BRIDGEBP &in Info)
+	asExecuteDynamic(def.asOnBreakpoint, (OBJECT)Info->breakpoint);
 }
 
 void PauseCallback(CBTYPE Type, PLUG_CB_PAUSEDEBUG *Info)
@@ -126,12 +133,14 @@ void AttachCallback(CBTYPE Type, PLUG_CB_ATTACH *Info)
 
 void DetachCallback(CBTYPE Type, PLUG_CB_DETACH *Info)
 {
-	// void OnDetach(uint ProcessId, uint ThreadId)
-	asExecuteDynamic(def.asOnDetach, Info->fdProcessInfo->dwProcessId, Info->fdProcessInfo->dwThreadId);
+	// void OnDetach(PROCESS_INFORMATION &in Info)
+	asExecuteDynamic(def.asOnDetach, (OBJECT)Info->fdProcessInfo);
 }
 
 void DebugEventCallback(CBTYPE Type, PLUG_CB_DEBUGEVENT *Info)
 {
+	// void OnDebugEvent(DEBUG_EVENT &in Info)
+	asExecuteDynamic(def.asOnDebugEvent, (OBJECT)Info->DebugEvent);
 }
 
 void MenuEntryCallback(CBTYPE Type, PLUG_CB_MENUENTRY *Info)

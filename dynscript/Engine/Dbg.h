@@ -20,6 +20,8 @@ namespace Dbg
 	bool asCmdExec(std::string &Cmd);
 	bool asCmdExecDirect(std::string &Cmd);
 
+	bool asMemMap(MEMMAP *Map);
+
 	bool asIsValidExpression(std::string &Expression);
 	bool asIsDebugging();
 	bool asIsJumpGoingToExecute(ULONG_PTR Address);

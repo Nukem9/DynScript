@@ -35,7 +35,7 @@ namespace Dbg
 		VERIFY(Engine->RegisterGlobalFunction("ptr MemGetBaseAddr(ptr Address, uint &out Size = 0)", asFUNCTION(asMemGetBaseAddr), asCALL_CDECL));
 		VERIFY(Engine->RegisterGlobalFunction("bool CmdExec(string &in Cmd)", asFUNCTION(asCmdExec), asCALL_CDECL));
 		VERIFY(Engine->RegisterGlobalFunction("bool CmdExecDirect(string &in Cmd)", asFUNCTION(asCmdExecDirect), asCALL_CDECL));
-		//VERIFY(Engine->RegisterGlobalFunction("bool MemMap(........)", asFUNCTION(asMemMap), asCALL_CDECL));
+		VERIFY(Engine->RegisterGlobalFunction("bool MemMap(MEMMAP &out Map)", asFUNCTION(asMemMap), asCALL_CDECL));
 		VERIFY(Engine->RegisterGlobalFunction("bool IsValidExpression(string &in Expression)", asFUNCTION(asIsValidExpression), asCALL_CDECL));
 		VERIFY(Engine->RegisterGlobalFunction("bool IsDebugging()", asFUNCTION(asIsDebugging), asCALL_CDECL));
 		VERIFY(Engine->RegisterGlobalFunction("bool IsJumpGoingToExecute(ptr Address)", asFUNCTION(asIsJumpGoingToExecute), asCALL_CDECL));
@@ -145,10 +145,13 @@ namespace Dbg
 		return DbgCmdExecDirect(Cmd.c_str());
 	}
 
-// 	bool asMemMap(/*....*/)
-// 	{
-// 		return false;
-// 	}
+	bool asMemMap(MEMMAP *Map)
+	{
+		if (!Map)
+			return false;
+
+		return DbgMemMap(Map);
+	}
 
 	bool asIsValidExpression(std::string &Expression)
 	{

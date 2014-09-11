@@ -80,22 +80,22 @@ namespace Script
 		GetFunction(void, OnPluginSetup,		"int DebuggerVersion, int PluginVersion");
 		GetFunction(void, OnInitDebug,			"string &in File");
 		GetFunction(void, OnStopDebug,			"");
-		GetFunction(void, OnCreateProcess,		"int param");
-		GetFunction(void, OnExitProcess,		"uint ExitCode");
-		GetFunction(void, OnCreateThread,		"int param");
-		GetFunction(void, OnExitThread,			"uint ThreadId, uint ExitCode");
+		GetFunction(void, OnCreateProcess,		"CREATE_PROCESS_DEBUG_INFO &in Info, IMAGEHLP_MODULE64 &in Module, PROCESS_INFORMATION &in ProcessInfo");
+		GetFunction(void, OnExitProcess,		"EXIT_PROCESS_DEBUG_INFO &in Info");
+		GetFunction(void, OnCreateThread,		"CREATE_THREAD_DEBUG_INFO &in Info, uint ThreadId");
+		GetFunction(void, OnExitThread,			"EXIT_THREAD_DEBUG_INFO &in Info, uint ThreadId");
 		GetFunction(void, OnSystemBreakpoint,	"");
-		GetFunction(void, OnLoadDll,			"int param");
-		GetFunction(void, OnUnloadDll,			"ptr DllBase");
-		GetFunction(void, OnOutputDebugString,	"string &in Message");
-		GetFunction(void, OnException,			"int param");
-		GetFunction(void, OnBreakpoint,			"BPXTYPE Type, ptr Address, string &in Name, string &in Module");
+		GetFunction(void, OnLoadDll,			"LOAD_DLL_DEBUG_INFO &in Info, IMAGEHLP_MODULE64 &in Module, string &in ModName");
+		GetFunction(void, OnUnloadDll,			"UNLOAD_DLL_DEBUG_INFO &in Info");
+		GetFunction(void, OnOutputDebugString,	"OUTPUT_DEBUG_STRING_INFO &in Info, string &in Message");
+		GetFunction(void, OnException,			"EXCEPTION_DEBUG_INFO &in Info");
+		GetFunction(void, OnBreakpoint,			"BRIDGEBP &in Info");
 		GetFunction(void, OnPauseDebug,			"");
 		GetFunction(void, OnResumeDebug,		"");
 		GetFunction(void, OnStepped,			"");
 		GetFunction(void, OnAttach,				"uint ProcessId");
-		GetFunction(void, OnDetach,				"uint ProcessId, uint ThreadId");
-		GetFunction(void, OnDebugEvent,			"uint ProcessId, uint ThreadId, uint Code, ptr");
+		GetFunction(void, OnDetach,				"PROCESS_INFORMATION &in Info");
+		GetFunction(void, OnDebugEvent,			"DEBUG_EVENT &in Info");
 		GetFunction(void, OnMenuEvent,			"int Entry");
 
 #undef GetFunction

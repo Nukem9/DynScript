@@ -8,6 +8,7 @@ namespace Global
 
 	// AngelScript functions
 	void asTypeof(asIScriptGeneric *Gen);
+	void asSizeof(asIScriptGeneric *Gen);
 	void asTypesize(asIScriptGeneric *Gen);
 	void asAddressof(asIScriptGeneric *Gen);
 

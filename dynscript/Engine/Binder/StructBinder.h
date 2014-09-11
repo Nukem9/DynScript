@@ -19,7 +19,7 @@
 // READ from a struct array:
 // val = struct.array[index];
 //
-#define AS_ADD_STRUCT_ARRAY(type, member, func)				VERIFY(Engine->RegisterObjectMethod(				\
+#define AS_STRUCT_ADD_ARRAY(type, member, func)				VERIFY(Engine->RegisterObjectMethod(				\
 																__zname,										\
 																#type " get_" #member "(uint)",					\
 																asLAMBDA([](asUINT Index, objDecl *Obj) func),	\
@@ -30,9 +30,9 @@
 // val = struct.member;
 // struct.member = val;
 //
-#define AS_STRUCT_ACCESS(type, member, readf, writef)		AS_ADD_STRUCT_ACCESS_MOD(type, member, "", readf, writef)
+#define AS_STRUCT_ACCESS(type, member, readf, writef)		AS_STRUCT_ACCESS_MOD(type, member, "", readf, writef)
 
-#define AS_ADD_STRUCT_ACCESS_MOD(type, member, mod, readf, writef)											\
+#define AS_STRUCT_ACCESS_MOD(type, member, mod, readf, writef)											\
 															VERIFY(Engine->RegisterObjectMethod(			\
 																__zname,									\
 																#type mod " get_" #member "()",				\

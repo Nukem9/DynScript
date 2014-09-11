@@ -15,7 +15,7 @@ namespace Script
 		// MEMMAP
 		AS_BEGIN_STRUCT(MEMMAP)
 			AS_STRUCT_ADD(int,            count)
-			AS_ADD_STRUCT_ARRAY(MEMPAGE&, page,
+			AS_STRUCT_ADD_ARRAY(MEMPAGE&, page,
 			-> MEMPAGE*
 			{
 				if (Index > (asUINT)Obj->count)
@@ -40,7 +40,7 @@ namespace Script
 		// BPMAP
 		AS_BEGIN_STRUCT(BPMAP)
 			AS_STRUCT_ADD(int,          count)
-			AS_ADD_STRUCT_ARRAY(BPMAP&, bp,
+			AS_STRUCT_ADD_ARRAY(BPMAP&, bp,
 			-> BRIDGEBP*
 			{
 				if (Index > (asUINT)Obj->count)
@@ -77,8 +77,8 @@ namespace Script
 		// SYMBOLINFO
 		AS_BEGIN_STRUCT(SYMBOLINFO)
 			AS_STRUCT_ADD(ptr,       addr)
-			AS_STRUCT_ACCESS(string, decoratedSymbol,   STR_GET(decoratedSymbol),   { assert(false); })
-			AS_STRUCT_ACCESS(string, undecoratedSymbol, STR_GET(undecoratedSymbol), { assert(false); })
+			AS_STRUCT_ACCESS(string, decoratedSymbol,   STR_GET(decoratedSymbol),   {  })
+			AS_STRUCT_ACCESS(string, undecoratedSymbol, STR_GET(undecoratedSymbol), {  })
 		AS_END_STRUCT()
 
 		// SYMBOLMODULEINFO
@@ -162,7 +162,7 @@ namespace Script
 			AS_STRUCT_ADD(DISASM_INSTRTYPE,  type)
 			AS_STRUCT_ADD(int,               argcount)
 			AS_STRUCT_ADD(int,               instr_size)
-			AS_ADD_STRUCT_ARRAY(DISASM_ARG&, arg,
+			AS_STRUCT_ADD_ARRAY(DISASM_ARG&, arg,
 			-> DISASM_ARG*
 			{
 				if (Index > ARRAYSIZE(Obj->arg))
@@ -175,6 +175,31 @@ namespace Script
 
 	void FORCEINLINE RegisterWindowsStructs(asIScriptEngine *Engine)
 	{
+		using namespace std;
+
+		// GUID
+		AS_BEGIN_STRUCT(GUID)
+			AS_STRUCT_ADD(dword, Data1)
+			AS_STRUCT_ADD(word, Data2)
+			AS_STRUCT_ADD(word, Data3)
+			AS_STRUCT_ADD_ARRAY(ptr, Data4,
+			-> BYTE
+			{
+				if (Index > ARRAYSIZE(Obj->Data4))
+					return 0;
+
+				return Obj->Data4[Index];
+			})
+		AS_END_STRUCT()
+
+		// PROCESS_INFORMATION
+		AS_BEGIN_STRUCT(PROCESS_INFORMATION)
+			AS_STRUCT_ADD(handle, hProcess)
+			AS_STRUCT_ADD(handle, hThread)
+			AS_STRUCT_ADD(dword,  dwProcessId)
+			AS_STRUCT_ADD(dword,  dwThreadId)
+		AS_END_STRUCT()
+
 		// MEMORY_BASIC_INFORMATION
 		AS_BEGIN_STRUCT(MEMORY_BASIC_INFORMATION)
 			AS_STRUCT_ADD(ptr,   BaseAddress)
@@ -190,10 +215,10 @@ namespace Script
 		AS_BEGIN_STRUCT(EXCEPTION_RECORD)
 			AS_STRUCT_ADD(dword,     ExceptionCode)
 			AS_STRUCT_ADD(dword,     ExceptionFlags)
-			AS_ADD_STRUCT_ACCESS_MOD(EXCEPTION_RECORD, ExceptionRecord, "&", { return Obj->ExceptionRecord; }, { Obj->ExceptionRecord = &Val; })
+			AS_STRUCT_ACCESS_MOD(EXCEPTION_RECORD, ExceptionRecord, "&", { return Obj->ExceptionRecord; }, { Obj->ExceptionRecord = &Val; })
 			AS_STRUCT_ADD(ptr,       ExceptionAddress)
 			AS_STRUCT_ADD(dword,     NumberParameters)
-			AS_ADD_STRUCT_ARRAY(ptr, ExceptionInformation,
+			AS_STRUCT_ADD_ARRAY(ptr, ExceptionInformation,
 			-> ULONG_PTR
 			{
 				if (Index > ARRAYSIZE(Obj->ExceptionInformation))
@@ -201,6 +226,44 @@ namespace Script
 
 				return Obj->ExceptionInformation[Index];
 			})
+		AS_END_STRUCT()
+
+		// IMAGEHLP_MODULE64
+		AS_BEGIN_STRUCT(IMAGEHLP_MODULE64)
+			AS_STRUCT_ADD(dword,      SizeOfStruct)
+			AS_STRUCT_ADD(qword,      BaseOfImage)
+			AS_STRUCT_ADD(dword,      ImageSize)
+			AS_STRUCT_ADD(dword,      TimeDateStamp)
+			AS_STRUCT_ADD(dword,      CheckSum)
+			AS_STRUCT_ADD(dword,      NumSyms)
+			// AS_STRUCT_ADD(SYM_TYPE, SymType)
+			AS_STRUCT_ACCESS(string,  ModuleName,      STR_GET(ModuleName),      STR_SET(ModuleName))
+			AS_STRUCT_ACCESS(string,  ImageName,       STR_GET(ImageName),       STR_SET(ImageName))
+			AS_STRUCT_ACCESS(string,  LoadedImageName, STR_GET(LoadedImageName), STR_SET(LoadedImageName))
+			AS_STRUCT_ACCESS(string,  LoadedPdbName,   STR_GET(LoadedPdbName),   STR_SET(LoadedPdbName))
+			AS_STRUCT_ADD(dword,      CVSig)
+			AS_STRUCT_ADD_ARRAY(byte, CVData,
+			-> BYTE
+			{
+				if (Index > ARRAYSIZE(Obj->CVData))
+				return 0;
+
+				return Obj->CVData[Index];
+			})
+			AS_STRUCT_ADD(dword,      PdbSig)
+			AS_STRUCT_ADD(GUID,       PdbSig70)
+			AS_STRUCT_ADD(dword,      PdbAge)
+			AS_STRUCT_ADD(int,        PdbUnmatched)
+			AS_STRUCT_ADD(int,        DbgUnmatched)
+			AS_STRUCT_ADD(int,        LineNumbers)
+			AS_STRUCT_ADD(int,        GlobalSymbols)
+			AS_STRUCT_ADD(int,        TypeInfo)
+		AS_END_STRUCT()
+
+		// EXCEPTION_DEBUG_INFO
+		AS_BEGIN_STRUCT(EXCEPTION_DEBUG_INFO)
+			AS_STRUCT_ADD(EXCEPTION_RECORD, ExceptionRecord)
+			AS_STRUCT_ADD(dword,            dwFirstChance)
 		AS_END_STRUCT()
 
 		// CREATE_THREAD_DEBUG_INFO
@@ -224,6 +287,16 @@ namespace Script
 			AS_STRUCT_ADD(word,   fUnicode)
 		AS_END_STRUCT()
 
+		// EXIT_THREAD_DEBUG_INFO
+		AS_BEGIN_STRUCT(EXIT_THREAD_DEBUG_INFO)
+			AS_STRUCT_ADD(dword, dwExitCode)
+		AS_END_STRUCT()
+
+		// EXIT_PROCESS_DEBUG_INFO
+		AS_BEGIN_STRUCT(EXIT_PROCESS_DEBUG_INFO)
+			AS_STRUCT_ADD(dword, dwExitCode)
+		AS_END_STRUCT()
+
 		// LOAD_DLL_DEBUG_INFO
 		AS_BEGIN_STRUCT(LOAD_DLL_DEBUG_INFO)
 			AS_STRUCT_ADD(handle, hFile)
@@ -232,6 +305,39 @@ namespace Script
 			AS_STRUCT_ADD(dword,  nDebugInfoSize)
 			AS_STRUCT_ADD(ptr,    lpImageName)
 			AS_STRUCT_ADD(word,   fUnicode)
+		AS_END_STRUCT()
+
+		// UNLOAD_DLL_DEBUG_INFO
+		AS_BEGIN_STRUCT(UNLOAD_DLL_DEBUG_INFO)
+			AS_STRUCT_ADD(ptr, lpBaseOfDll)
+		AS_END_STRUCT()
+
+		// OUTPUT_DEBUG_STRING_INFO
+		AS_BEGIN_STRUCT(OUTPUT_DEBUG_STRING_INFO)
+			AS_STRUCT_ADD(ptr,  lpDebugStringData)
+			AS_STRUCT_ADD(word, fUnicode)
+			AS_STRUCT_ADD(word, nDebugStringLength)
+		AS_END_STRUCT()
+
+		// RIP_INFO
+		AS_BEGIN_STRUCT(RIP_INFO)
+			AS_STRUCT_ADD(dword, dwError)
+			AS_STRUCT_ADD(dword, dwType)
+		AS_END_STRUCT()
+
+		// DEBUG_EVENT
+		AS_BEGIN_STRUCT(DEBUG_EVENT)
+			AS_STRUCT_ADD(dword, dwDebugEventCode)
+			AS_STRUCT_ADD(dword, dwProcessId)
+			AS_STRUCT_ADD(dword, dwThreadId)
+			VERIFY(Engine->RegisterObjectProperty(__zname, "EXCEPTION_DEBUG_INFO      Exception",         asOFFSET(objDecl, u.Exception)));
+			VERIFY(Engine->RegisterObjectProperty(__zname, "CREATE_THREAD_DEBUG_INFO  CreateThread",      asOFFSET(objDecl, u.CreateThread)));
+			VERIFY(Engine->RegisterObjectProperty(__zname, "CREATE_PROCESS_DEBUG_INFO CreateProcessInfo", asOFFSET(objDecl, u.CreateProcessInfo)));
+			VERIFY(Engine->RegisterObjectProperty(__zname, "EXIT_THREAD_DEBUG_INFO    ExitThread",        asOFFSET(objDecl, u.ExitThread)));
+			VERIFY(Engine->RegisterObjectProperty(__zname, "LOAD_DLL_DEBUG_INFO       LoadDll",           asOFFSET(objDecl, u.LoadDll)));
+			VERIFY(Engine->RegisterObjectProperty(__zname, "UNLOAD_DLL_DEBUG_INFO     UnloadDll",         asOFFSET(objDecl, u.UnloadDll)));
+			VERIFY(Engine->RegisterObjectProperty(__zname, "OUTPUT_DEBUG_STRING_INFO  DebugString",       asOFFSET(objDecl, u.DebugString)));
+			VERIFY(Engine->RegisterObjectProperty(__zname, "RIP_INFO                  RipInfo",           asOFFSET(objDecl, u.RipInfo)));
 		AS_END_STRUCT()
 	}
 }

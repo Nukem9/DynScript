@@ -119,12 +119,14 @@ namespace FuncBinderInternal
 template<typename... Args>
 asIScriptContext *asExecuteDynamic(asIScriptFunction *Function, Args&&... Parameters)
 {
+	if (!Function)
+		return nullptr;
+
 	auto context = Script::CreateContext(Function);
 
 	//
 	// Verify that the number of parameters matches the one in the script code
 	//
-	assert(Function);
 	assert(Function->GetParamCount() == sizeof...(Parameters));
 
 	//

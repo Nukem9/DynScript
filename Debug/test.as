@@ -19,24 +19,24 @@ void OnStopDebug()
   printf("OnStopDebug()\n");
 }
 
-void OnCreateProcess(int param)
+void OnCreateProcess(CREATE_PROCESS_DEBUG_INFO &in Info, IMAGEHLP_MODULE64 &in Module, PROCESS_INFORMATION &in ProcessInfo)
 {
   printf("OnCreateProcess()\n");
 }
 
-void OnExitProcess(uint ExitCode)
+void OnExitProcess(EXIT_PROCESS_DEBUG_INFO &in Info)
 {
-  printf("OnExitProcess(0x%X)\n", ExitCode);
+  printf("OnExitProcess(0x%X)\n", Info.dwExitCode);
 }
 
-void OnCreateThread(int param)
+void OnCreateThread(CREATE_THREAD_DEBUG_INFO &in Info, uint ThreadId)
 {
-  printf("OncreateThread()\n");
+  printf("OncreateThread(0x%X)\n", ThreadId);
 }
 
-void OnExitThread(uint ThreadId, uint ExitCode)
+void OnExitThread(EXIT_THREAD_DEBUG_INFO &in Info, uint ThreadId)
 {
-  printf("OnExitThread(0x%X, 0x%X)\n", ThreadId, ExitCode);
+  printf("OnExitThread(0x%X, 0x%X)\n", Info.dwExitCode, ThreadId);
 }
 
 void OnSystemBreakpoint()
@@ -67,29 +67,29 @@ void OnSystemBreakpoint()
   printf("EIP = 0x%X\n", Dbg::ValFromString("eip"));
 }
 
-void OnLoadDll(int param)
+void OnLoadDll(LOAD_DLL_DEBUG_INFO &in Info, IMAGEHLP_MODULE64 &in Module, string &in ModName)
 {
-  printf("OnLoadDll()\n");
+  printf("OnLoadDll(0x%p)\n", Info.lpBaseOfDll);
 }
 
-void OnUnloadDll(ptr DllBase)
+void OnUnloadDll(UNLOAD_DLL_DEBUG_INFO &in Info)
 {
-  printf("OnUnloadDll(0x%p)\n", DllBase);
+  printf("OnUnloadDll(0x%p)\n", Info.lpBaseOfDll);
 }
 
-void OnOutputDebugString(string &in Message)
+void OnOutputDebugString(OUTPUT_DEBUG_STRING_INFO &in Info, string &in Message)
 {
   printf("OnOutputDebugString(%s)\n", Message);
 }
 
-void OnException(int param)
+void OnException(EXCEPTION_DEBUG_INFO &in Info)
 {
-  printf("OnException()\n");
+  printf("OnException(0x%p)\n", Info.ExceptionRecord.ExceptionAddress);
 }
 
-void OnBreakpoint(BPXTYPE Type, ptr Address, string &in Name, string &in Module)
+void OnBreakpoint(BRIDGEBP &in Info)
 {
-  printf("OnBreakpoint(%d, 0x%p, %s, %s)\n", Type, Address, Name, Module);
+  printf("OnBreakpoint(%d, 0x%p, %s, %s)\n", Info.type, Info.addr, Info.name, Info.mod);
 }
 
 void OnPauseDebug()
@@ -112,14 +112,14 @@ void OnAttach(uint ProcessId)
   printf("OnAttach(0x%X)\n", ProcessId);
 }
 
-void OnDetach(uint ProcessId, uint ThreadId)
+void OnDetach(PROCESS_INFORMATION &in Info)
 {
-  printf("OnDetach(0x%X, 0x%X)\n", ProcessId, ThreadId);
+  printf("OnDetach(0x%X, 0x%X)\n", Info.dwProcessId, Info.dwThreadId);
 }
 
-void OnDebugEvent(uint ProcessId, uint ThreadId, uint Code, ptr)
+void OnDebugEvent(DEBUG_EVENT &in Info)
 {
-  printf("OnDebugEvent()\n");
+  // printf("OnDebugEvent()\n");
 }
 
 void OnMenuEvent(int Entry)
