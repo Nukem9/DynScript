@@ -39,10 +39,22 @@ namespace Dbg
 	bool asGetRegDump(REGDUMP *Dump);
 
 	bool asMemIsValidReadPtr(ULONG_PTR Address);
-
+	int asGetBpList(BPXTYPE Type, BPMAP *Map);
 	FUNCTYPE asGetFunctionTypeAt(ULONG_PTR Address);
 	LOOPTYPE asGetLoopTypeAt(ULONG_PTR Address, int Depth);
 	ULONG_PTR asGetBranchDestination(ULONG_PTR Address);
+
+	void asScriptLoad(std::string &File);
+	void asScriptUnload();
+	void asScriptRun(int DestLine);
+	void asScriptStep();
+	bool asScriptBpToggle(int Line);
+	bool asScriptBpGet(int Line);
+	bool asScriptCmdExec(std::string &Command);
+	void asScriptAbort();
+	SCRIPTLINETYPE asScriptGetLineType(int Line);
+	void asScriptSetIp(int Line);
+	bool asScriptGetBranchInfo(int Line, SCRIPTBRANCH *Info);
 
 	asBYTE asByteAt(ULONG_PTR Address);
 	asWORD asWordAt(ULONG_PTR Address);

@@ -26,39 +26,51 @@ namespace Dbg
 		//
 		// FUNCTIONS
 		//
-		VERIFY(Engine->RegisterGlobalFunction("string DbgInit()", asFUNCTION(asDbgInit), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("void DbgExit()", asFUNCTION(asDbgExit), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("bool MemWrite(ptr Address, ptr Buffer, uint Size, uint &out BytesWritten = 0)", asFUNCTION(asMemWrite), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("bool MemRead(ptr Address, ptr Buffer, uint Size, uint &out BytesRead = 0)", asFUNCTION(asMemRead), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("bool MemFill(ptr Address, byte Value, uint Size)", asFUNCTION(asMemFill), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("ptr MemGetPageSize(ptr Base)", asFUNCTION(asMemGetPageSize), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("ptr MemGetBaseAddr(ptr Address, uint &out Size = 0)", asFUNCTION(asMemGetBaseAddr), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("bool CmdExec(string &in Cmd)", asFUNCTION(asCmdExec), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("bool CmdExecDirect(string &in Cmd)", asFUNCTION(asCmdExecDirect), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("bool MemMap(MEMMAP &out Map)", asFUNCTION(asMemMap), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("bool IsValidExpression(string &in Expression)", asFUNCTION(asIsValidExpression), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("bool IsDebugging()", asFUNCTION(asIsDebugging), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("bool IsJumpGoingToExecute(ptr Address)", asFUNCTION(asIsJumpGoingToExecute), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("bool GetLabelAt(ptr Address, SEGMENTREG Segment, string &out Text)", asFUNCTION(asGetLabelAt), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("bool SetLabelAt(ptr Address, string &in Text)", asFUNCTION(asSetLabelAt), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("bool GetBookmarkAt(ptr Address)", asFUNCTION(asGetBookmarkAt), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("bool SetBookmarkAt(ptr Address, bool Enable)", asFUNCTION(asSetBookmarkAt), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("bool GetModuleAt(ptr Address, string &out Module)", asFUNCTION(asGetModuleAt), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("BPXTYPE GetBpxTypeAt(ptr Address)", asFUNCTION(asGetBpxTypeAt), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("ptr ValFromString(string &in Value)", asFUNCTION(asValFromString), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("bool GetRegDump(REGDUMP &out Dump)", asFUNCTION(asGetRegDump), asCALL_CDECL));
+#define RegisterFunction(func, def) VERIFY(Engine->RegisterGlobalFunction(def, asFUNCTION(func), asCALL_CDECL));
+
+		RegisterFunction(asDbgInit,              "string DbgInit()");
+		RegisterFunction(asDbgExit,              "void DbgExit()");
+		RegisterFunction(asMemWrite,             "bool MemWrite(ptr Address, ptr Buffer, uint Size, uint &out BytesWritten = 0)");
+		RegisterFunction(asMemRead,              "bool MemRead(ptr Address, ptr Buffer, uint Size, uint &out BytesRead = 0)");
+		RegisterFunction(asMemFill,              "bool MemFill(ptr Address, byte Value, uint Size)");
+		RegisterFunction(asMemGetPageSize,       "ptr MemGetPageSize(ptr Base)");
+		RegisterFunction(asMemGetBaseAddr,       "ptr MemGetBaseAddr(ptr Address, uint &out Size = 0)");
+		RegisterFunction(asCmdExec,              "bool CmdExec(string &in Cmd)");
+		RegisterFunction(asCmdExecDirect,        "bool CmdExecDirect(string &in Cmd)");
+		RegisterFunction(asMemMap,               "bool MemMap(MEMMAP &out Map)");
+		RegisterFunction(asIsValidExpression,    "bool IsValidExpression(string &in Expression)");
+		RegisterFunction(asIsDebugging,          "bool IsDebugging()");
+		RegisterFunction(asIsJumpGoingToExecute, "bool IsJumpGoingToExecute(ptr Address)");
+		RegisterFunction(asGetLabelAt,           "bool GetLabelAt(ptr Address, SEGMENTREG Segment, string &out Text)");
+		RegisterFunction(asSetLabelAt,           "bool SetLabelAt(ptr Address, string &in Text)");
+		RegisterFunction(asGetBookmarkAt,        "bool GetBookmarkAt(ptr Address)");
+		RegisterFunction(asSetBookmarkAt,        "bool SetBookmarkAt(ptr Address, bool Enable)");
+		RegisterFunction(asGetModuleAt,          "bool GetModuleAt(ptr Address, string &out Module)");
+		RegisterFunction(asGetBpxTypeAt,         "BPXTYPE GetBpxTypeAt(ptr Address)");
+		RegisterFunction(asValFromString,        "ptr ValFromString(string &in Value)");
+		RegisterFunction(asGetRegDump,           "bool GetRegDump(REGDUMP &out Dump)");
 		// DbgValToString
-		VERIFY(Engine->RegisterGlobalFunction("bool MemIsValidReadPtr(ptr Address)", asFUNCTION(asMemIsValidReadPtr), asCALL_CDECL));
-		// DbgGetBpList
-		VERIFY(Engine->RegisterGlobalFunction("FUNCTYPE GetFunctionTypeAt(ptr Address)", asFUNCTION(asGetFunctionTypeAt), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("LOOPTYPE GetLoopTypeAt(ptr Address, int Depth)", asFUNCTION(asGetLoopTypeAt), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("ptr GetBranchDestination(ptr Address)", asFUNCTION(asGetBranchDestination), asCALL_CDECL));
+		RegisterFunction(asMemIsValidReadPtr,    "bool MemIsValidReadPtr(ptr Address)");
+		RegisterFunction(asGetBpList,            "int GetBpList(BPXTYPE Type, BPMAP &out Map)");
+		RegisterFunction(asGetFunctionTypeAt,    "FUNCTYPE GetFunctionTypeAt(ptr Address)");
+		RegisterFunction(asGetLoopTypeAt,        "LOOPTYPE GetLoopTypeAt(ptr Address, int Depth)");
+		RegisterFunction(asGetBranchDestination, "ptr GetBranchDestination(ptr Address)");
+		RegisterFunction(asScriptLoad,           "void ScriptLoad(string &in File)");
+		RegisterFunction(asScriptUnload,         "void ScriptUnload()");
+		RegisterFunction(asScriptRun,            "void ScriptRun(int DestLine)");
+		RegisterFunction(asScriptStep,           "void ScriptStep()");
+		RegisterFunction(asScriptBpToggle,       "bool ScriptBpToggle(int Line)");
+		RegisterFunction(asScriptBpGet,          "bool ScriptBpGet(int Line)");
+		RegisterFunction(asScriptCmdExec,        "bool ScriptCmdExec(string &in Command)");
+		RegisterFunction(asScriptAbort,          "void ScriptAbort()");
+		RegisterFunction(asScriptGetLineType,    "SCRIPTLINETYPE ScriptGetLineType(int Line)");
+		RegisterFunction(asScriptSetIp,          "void ScriptSetIp(int Line)");
+		RegisterFunction(asScriptGetBranchInfo,  "bool ScriptGetBranchInfo(int Line, SCRIPTBRANCH &out Info)");
 
-
-		VERIFY(Engine->RegisterGlobalFunction("byte byteAt(ptr Address)", asFUNCTION(asByteAt), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("word wordAt(ptr Address)", asFUNCTION(asWordAt), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("dword dwordAt(ptr Address)", asFUNCTION(asDwordAt), asCALL_CDECL));
-		VERIFY(Engine->RegisterGlobalFunction("qword qwordAt(ptr Address)", asFUNCTION(asQwordAt), asCALL_CDECL));
+		RegisterFunction(asByteAt,               "byte byteAt(ptr Address)");
+		RegisterFunction(asWordAt,               "word wordAt(ptr Address)");
+		RegisterFunction(asDwordAt,              "dword dwordAt(ptr Address)");
+		RegisterFunction(asQwordAt,              "qword qwordAt(ptr Address)");
 	}
 
 	std::string asDbgInit()
@@ -233,6 +245,14 @@ namespace Dbg
 		return DbgMemIsValidReadPtr(Address);
 	}
 
+	int asGetBpList(BPXTYPE Type, BPMAP *Map)
+	{
+		if (!Map)
+			return 0;
+
+		return DbgGetBpList(Type, Map);
+	}
+
 	FUNCTYPE asGetFunctionTypeAt(ULONG_PTR Address)
 	{
 		return DbgGetFunctionTypeAt(Address);
@@ -246,6 +266,64 @@ namespace Dbg
 	ULONG_PTR asGetBranchDestination(ULONG_PTR Address)
 	{
 		return DbgGetBranchDestination(Address);
+	}
+
+	void asScriptLoad(std::string &File)
+	{
+		DbgScriptLoad(File.c_str());
+	}
+
+	void asScriptUnload()
+	{
+		DbgScriptUnload();
+	}
+
+	void asScriptRun(int DestLine)
+	{
+		DbgScriptRun(DestLine);
+	}
+
+	void asScriptStep()
+	{
+		DbgScriptStep();
+	}
+
+	bool asScriptBpToggle(int Line)
+	{
+		return DbgScriptBpToggle(Line);
+	}
+
+	bool asScriptBpGet(int Line)
+	{
+		return DbgScriptBpGet(Line);
+	}
+
+	bool asScriptCmdExec(std::string &Command)
+	{
+		return DbgScriptCmdExec(Command.c_str());
+	}
+
+	void asScriptAbort()
+	{
+		DbgScriptAbort();
+	}
+
+	SCRIPTLINETYPE asScriptGetLineType(int Line)
+	{
+		return DbgScriptGetLineType(Line);
+	}
+
+	void asScriptSetIp(int Line)
+	{
+		DbgScriptSetIp(Line);
+	}
+
+	bool asScriptGetBranchInfo(int Line, SCRIPTBRANCH *Info)
+	{
+		if (!Info)
+			return false;
+
+		return DbgScriptGetBranchInfo(Line, Info);
 	}
 
 	asBYTE asByteAt(ULONG_PTR Address)
