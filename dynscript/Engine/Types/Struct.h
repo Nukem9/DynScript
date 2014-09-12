@@ -18,7 +18,7 @@ namespace Script
 			AS_STRUCT_ADD_ARRAY(MEMPAGE&, page,
 			-> MEMPAGE*
 			{
-				if (Index > (asUINT)Obj->count)
+				if (Index >= (asUINT)Obj->count)
 					return nullptr;
 
 				return &Obj->page[Index];
@@ -43,8 +43,8 @@ namespace Script
 			AS_STRUCT_ADD_ARRAY(BPMAP&, bp,
 			-> BRIDGEBP*
 			{
-				if (Index > (asUINT)Obj->count)
-				return nullptr;
+				if (Index >= (asUINT)Obj->count)
+					return nullptr;
 
 				return &Obj->bp[Index];
 			})
@@ -165,11 +165,97 @@ namespace Script
 			AS_STRUCT_ADD_ARRAY(DISASM_ARG&, arg,
 			-> DISASM_ARG*
 			{
-				if (Index > ARRAYSIZE(Obj->arg))
+				if (Index >= ARRAYSIZE(Obj->arg))
 					return nullptr;
 
 				return &Obj->arg[Index];
 			})
+		AS_END_STRUCT()
+
+		// STACK_COMMENT
+		AS_BEGIN_STRUCT(STACK_COMMENT)
+			AS_STRUCT_ADD_ARRAY(byte, color,
+			-> BYTE
+			{
+				if (Index >= ARRAYSIZE(Obj->color))
+					return 0;
+
+				return Obj->color[Index];
+			})
+			AS_STRUCT_ACCESS(string, comment, STR_GET(comment), STR_SET(comment))
+		AS_END_STRUCT()
+
+		// THREADINFO
+		AS_BEGIN_STRUCT(THREADINFO)
+			AS_STRUCT_ADD(int,       ThreadNumber)
+			AS_STRUCT_ADD(handle,    hThread)
+			AS_STRUCT_ADD(dword,     dwThreadId)
+			AS_STRUCT_ADD(ptr,       ThreadStartAddress)
+			AS_STRUCT_ADD(ptr,       ThreadLocalBase)
+			AS_STRUCT_ACCESS(string, threadName, STR_GET(threadName), STR_SET(threadName))
+		AS_END_STRUCT()
+
+		// THREADALLINFO
+		AS_BEGIN_STRUCT(THREADALLINFO)
+			AS_STRUCT_ADD(THREADINFO,       BasicInfo)
+			AS_STRUCT_ADD(ptr,              ThreadCip)
+			AS_STRUCT_ADD(dword,            SuspendCount)
+			AS_STRUCT_ADD(THREADPRIORITY,   Priority)
+			AS_STRUCT_ADD(THREADWAITREASON, WaitReason)
+			AS_STRUCT_ADD(dword,            LastError)
+		AS_END_STRUCT()
+
+		// THREADLIST
+		AS_BEGIN_STRUCT(THREADLIST)
+		AS_STRUCT_ADD(int, count)
+		AS_STRUCT_ADD_ARRAY(THREADALLINFO&, list,
+		-> THREADALLINFO*
+			{
+				if (Index >= (asUINT)Obj->count)
+					return 0;
+
+				return &Obj->list[Index];
+			})
+		AS_STRUCT_ADD(int, CurrentThread)
+		AS_END_STRUCT()
+
+		// MEMORY_INFO
+		AS_BEGIN_STRUCT(MEMORY_INFO)
+			AS_STRUCT_ADD(ptr,         value)
+			AS_STRUCT_ADD(MEMORY_SIZE, size)
+			AS_STRUCT_ACCESS(string,   mnemonic, STR_GET(mnemonic), STR_SET(mnemonic))
+		AS_END_STRUCT()
+
+		// VALUE_INFO
+		AS_BEGIN_STRUCT(VALUE_INFO)
+			AS_STRUCT_ADD(ptr,         value)
+			AS_STRUCT_ADD(MEMORY_SIZE, size)
+		AS_END_STRUCT()
+
+		// BASIC_INSTRUCTION_INFO
+		AS_BEGIN_STRUCT(BASIC_INSTRUCTION_INFO)
+			AS_STRUCT_ADD(dword,       type)
+			AS_STRUCT_ADD(VALUE_INFO,  value)
+			AS_STRUCT_ADD(MEMORY_INFO, memory)
+			AS_STRUCT_ADD(ptr,         addr)
+			AS_STRUCT_ADD(bool,        branch)
+			AS_STRUCT_ADD(bool,        call)
+		AS_END_STRUCT()
+
+		// SCRIPTBRANCH
+		AS_BEGIN_STRUCT(SCRIPTBRANCH)
+			AS_STRUCT_ADD(SCRIPTBRANCHTYPE, type)
+			AS_STRUCT_ADD(int,              dest)
+			AS_STRUCT_ACCESS(string,        branchlabel, STR_GET(branchlabel), STR_SET(branchlabel))
+		AS_END_STRUCT()
+
+		// FUNCTION_LOOP_INFO
+		AS_BEGIN_STRUCT(FUNCTION_LOOP_INFO)
+			AS_STRUCT_ADD(ptr,  addr)
+			AS_STRUCT_ADD(ptr,  start)
+			AS_STRUCT_ADD(ptr,  end)
+			AS_STRUCT_ADD(bool, manual)
+			AS_STRUCT_ADD(int,  depth)
 		AS_END_STRUCT()
 	}
 
@@ -185,7 +271,7 @@ namespace Script
 			AS_STRUCT_ADD_ARRAY(ptr, Data4,
 			-> BYTE
 			{
-				if (Index > ARRAYSIZE(Obj->Data4))
+				if (Index >= ARRAYSIZE(Obj->Data4))
 					return 0;
 
 				return Obj->Data4[Index];
@@ -221,7 +307,7 @@ namespace Script
 			AS_STRUCT_ADD_ARRAY(ptr, ExceptionInformation,
 			-> ULONG_PTR
 			{
-				if (Index > ARRAYSIZE(Obj->ExceptionInformation))
+				if (Index >= ARRAYSIZE(Obj->ExceptionInformation))
 					return 0;
 
 				return Obj->ExceptionInformation[Index];
@@ -245,8 +331,8 @@ namespace Script
 			AS_STRUCT_ADD_ARRAY(byte, CVData,
 			-> BYTE
 			{
-				if (Index > ARRAYSIZE(Obj->CVData))
-				return 0;
+				if (Index >= ARRAYSIZE(Obj->CVData))
+					return 0;
 
 				return Obj->CVData[Index];
 			})
