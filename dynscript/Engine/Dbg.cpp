@@ -66,6 +66,10 @@ namespace Dbg
 		RegisterFunction(asScriptGetLineType,    "SCRIPTLINETYPE ScriptGetLineType(int Line)");
 		RegisterFunction(asScriptSetIp,          "void ScriptSetIp(int Line)");
 		RegisterFunction(asScriptGetBranchInfo,  "bool ScriptGetBranchInfo(int Line, SCRIPTBRANCH &out Info)");
+		// DbgSymbolEnum
+		RegisterFunction(asAssembleAt,           "bool AssembleAt(ptr Address, string &in Instruction)");
+		RegisterFunction(asModBaseFromName,      "ptr ModBaseFromName(string &in Name)");
+
 
 		RegisterFunction(asByteAt,               "byte byteAt(ptr Address)");
 		RegisterFunction(asWordAt,               "word wordAt(ptr Address)");
@@ -324,6 +328,16 @@ namespace Dbg
 			return false;
 
 		return DbgScriptGetBranchInfo(Line, Info);
+	}
+
+	bool asAssembleAt(ULONG_PTR Address, std::string &Instruction)
+	{
+		return DbgAssembleAt(Address, Instruction.c_str());
+	}
+
+	ULONG_PTR asModBaseFromName(std::string &Name)
+	{
+		return DbgModBaseFromName(Name.c_str());
 	}
 
 	asBYTE asByteAt(ULONG_PTR Address)

@@ -55,6 +55,8 @@ namespace Dbg
 	SCRIPTLINETYPE asScriptGetLineType(int Line);
 	void asScriptSetIp(int Line);
 	bool asScriptGetBranchInfo(int Line, SCRIPTBRANCH *Info);
+	bool asAssembleAt(ULONG_PTR Address, std::string &Instruction);
+	ULONG_PTR asModBaseFromName(std::string &Name);
 
 	asBYTE asByteAt(ULONG_PTR Address);
 	asWORD asWordAt(ULONG_PTR Address);

@@ -60,8 +60,28 @@ namespace Script
 		AS_END_ENUM()
 
 		// DBGMSG
+
 		// SCRIPTLINETYPE
+		AS_BEGIN_ENUM(SCRIPTLINETYPE)
+			AS_ADD_ENUM(linecommand)
+			AS_ADD_ENUM(linebranch)
+			AS_ADD_ENUM(linelabel)
+			AS_ADD_ENUM(linecomment)
+			AS_ADD_ENUM(lineempty)
+		AS_END_ENUM()
+
 		// SCRIPTBRANCHTYPE
+		AS_BEGIN_ENUM(SCRIPTBRANCHTYPE)
+			AS_ADD_ENUM(scriptnobranch)
+			AS_ADD_ENUM(scriptjmp)
+			AS_ADD_ENUM(scriptjnejnz)
+			AS_ADD_ENUM(scriptjejz)
+			AS_ADD_ENUM(scriptjbjl)
+			AS_ADD_ENUM(scriptjajg)
+			AS_ADD_ENUM(scriptjbejle)
+			AS_ADD_ENUM(scriptjaejge)
+			AS_ADD_ENUM(scriptcall)
+		AS_END_ENUM()
 
 		// DISASM_INSTRTYPE
 		AS_BEGIN_ENUM(DISASM_INSTRTYPE)
