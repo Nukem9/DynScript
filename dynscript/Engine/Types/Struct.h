@@ -207,16 +207,16 @@ namespace Script
 
 		// THREADLIST
 		AS_BEGIN_STRUCT(THREADLIST)
-		AS_STRUCT_ADD(int, count)
-		AS_STRUCT_ADD_ARRAY(THREADALLINFO&, list,
-		-> THREADALLINFO*
-			{
-				if (Index >= (asUINT)Obj->count)
-					return 0;
+			AS_STRUCT_ADD(int,                  count)
+			AS_STRUCT_ADD_ARRAY(THREADALLINFO&, list,
+			-> THREADALLINFO*
+				{
+					if (Index >= (asUINT)Obj->count)
+						return 0;
 
-				return &Obj->list[Index];
-			})
-		AS_STRUCT_ADD(int, CurrentThread)
+					return &Obj->list[Index];
+				})
+			AS_STRUCT_ADD(int,                  CurrentThread)
 		AS_END_STRUCT()
 
 		// MEMORY_INFO
@@ -265,9 +265,9 @@ namespace Script
 
 		// GUID
 		AS_BEGIN_STRUCT(GUID)
-			AS_STRUCT_ADD(dword, Data1)
-			AS_STRUCT_ADD(word, Data2)
-			AS_STRUCT_ADD(word, Data3)
+			AS_STRUCT_ADD(dword,     Data1)
+			AS_STRUCT_ADD(word,      Data2)
+			AS_STRUCT_ADD(word,      Data3)
 			AS_STRUCT_ADD_ARRAY(ptr, Data4,
 			-> BYTE
 			{
