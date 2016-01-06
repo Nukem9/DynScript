@@ -323,8 +323,10 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="angelscript\source\as_callfunc_arm_xcode.S" />
-    <None Include="angelscript\source\as_callfunc_x64_msvc_asm.asm">
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="angelscript\source\as_callfunc_x64_msvc_asm.asm">
       <Filter>Source Files</Filter>
-    </None>
+    </MASM>
   </ItemGroup>
 </Project>

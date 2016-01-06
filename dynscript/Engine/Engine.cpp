@@ -51,7 +51,7 @@ namespace Script
 
 		CScriptBuilder builder;
 
-#ifdef _WIN64_
+#ifdef _WIN64
 		builder.DefineWord("__X64__");
 #else
 		builder.DefineWord("__X86__");

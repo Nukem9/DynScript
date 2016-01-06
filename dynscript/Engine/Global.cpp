@@ -21,7 +21,7 @@ namespace Global
 		VERIFY(Engine->RegisterTypedef("dword", "uint"));
 		VERIFY(Engine->RegisterTypedef("qword", "uint64"));
 
-#ifdef _WIN64_
+#ifdef _WIN64
 		VERIFY(Engine->RegisterTypedef("ptr", "uint64"));
 		VERIFY(Engine->RegisterTypedef("handle", "uint64"));
 #else
