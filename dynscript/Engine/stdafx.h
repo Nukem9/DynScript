@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine.h"
+#include "ScriptDb.h"
 #include "Global.h"
 #include "GUI.h"
 #include "Dbg.h"

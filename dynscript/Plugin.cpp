@@ -4,50 +4,54 @@ int pluginHandle;
 HWND hwndDlg;
 int hMenu;
 
-Script::ModuleDef def;
+#define ModuleCallback(function, ...)	Script::Db::ForeachModule([&](const Script::ModuleDef *Mod) \
+										{															\
+											asExecuteDynamic(Mod->function, __VA_ARGS__);			\
+											return true;											\
+										});
 
 void InitDebugCallback(CBTYPE Type, PLUG_CB_INITDEBUG *Info)
 {
 	std::string file(Info->szFileName);
 
 	// void OnInitDebug(string &in File)
-	asExecuteDynamic(def.asOnInitDebug, (OBJECT)&file);
+	ModuleCallback(asOnInitDebug, (OBJECT)&file);
 }
 
 void StopDebugCallback(CBTYPE Type, PLUG_CB_STOPDEBUG *Info)
 {
 	// void OnStopDebug()
-	asExecuteDynamic(def.asOnStopDebug);
+	ModuleCallback(asOnStopDebug);
 }
 
 void CreateProcessCallback(CBTYPE Type, PLUG_CB_CREATEPROCESS *Info)
 {
 	// void OnCreateProcess(CREATE_PROCESS_DEBUG_INFO &in Info, IMAGEHLP_MODULE64 &in Module, PROCESS_INFORMATION &in ProcessInfo)
-	asExecuteDynamic(def.asOnCreateProcess, (OBJECT)Info->CreateProcessInfo, (OBJECT)Info->modInfo, (OBJECT)Info->fdProcessInfo);
+	ModuleCallback(asOnCreateProcess, (OBJECT)Info->CreateProcessInfo, (OBJECT)Info->modInfo, (OBJECT)Info->fdProcessInfo);
 }
 
 void ExitProcessCallback(CBTYPE Type, PLUG_CB_EXITPROCESS *Info)
 {
 	// void OnExitProcess(EXIT_PROCESS_DEBUG_INFO &in Info)
-	asExecuteDynamic(def.asOnExitProcess, (OBJECT)Info->ExitProcess);
+	ModuleCallback(asOnExitProcess, (OBJECT)Info->ExitProcess);
 }
 
 void CreateThreadCallback(CBTYPE Type, PLUG_CB_CREATETHREAD *Info)
 {
 	// void OnCreateThread(CREATE_THREAD_DEBUG_INFO &in Info, uint ThreadId)
-	asExecuteDynamic(def.asOnCreateThread, (OBJECT)Info->CreateThread, Info->dwThreadId);
+	ModuleCallback(asOnCreateThread, (OBJECT)Info->CreateThread, Info->dwThreadId);
 }
 
 void ExitThreadCallback(CBTYPE Type, PLUG_CB_EXITTHREAD *Info)
 {
 	// void OnExitThread(EXIT_THREAD_DEBUG_INFO &in Info, uint ThreadId)
-	asExecuteDynamic(def.asOnExitThread, (OBJECT)Info->ExitThread, Info->dwThreadId);
+	ModuleCallback(asOnExitThread, (OBJECT)Info->ExitThread, Info->dwThreadId);
 }
 
 void SystemBreakpointCallback(CBTYPE Type, PLUG_CB_SYSTEMBREAKPOINT *Info)
 {
 	// void OnSystemBreakpoint()
-	asExecuteDynamic(def.asOnSystemBreakpoint);
+	ModuleCallback(asOnSystemBreakpoint);
 }
 
 void LoadDllCallback(CBTYPE Type, PLUG_CB_LOADDLL *Info)
@@ -55,13 +59,13 @@ void LoadDllCallback(CBTYPE Type, PLUG_CB_LOADDLL *Info)
 	std::string modname(Info->modname);
 
 	// void OnLoadDll(LOAD_DLL_DEBUG_INFO &in Info, IMAGEHLP_MODULE64 &in Module, string &in ModName)
-	asExecuteDynamic(def.asOnLoadDll, (OBJECT)Info->LoadDll, (OBJECT)Info->modInfo, (OBJECT)&modname);
+	ModuleCallback(asOnLoadDll, (OBJECT)Info->LoadDll, (OBJECT)Info->modInfo, (OBJECT)&modname);
 }
 
 void UnloadDllCallback(CBTYPE Type, PLUG_CB_UNLOADDLL *Info)
 {
 	// void OnUnloadDll(UNLOAD_DLL_DEBUG_INFO &in Info)
-	asExecuteDynamic(def.asOnUnloadDll, (OBJECT)Info->UnloadDll);
+	ModuleCallback(asOnUnloadDll, (OBJECT)Info->UnloadDll);
 }
 
 void DebugStringCallback(CBTYPE Type, PLUG_CB_OUTPUTDEBUGSTRING *Info)
@@ -92,61 +96,61 @@ void DebugStringCallback(CBTYPE Type, PLUG_CB_OUTPUTDEBUGSTRING *Info)
 	std::string message(buffer);
 
 	// void OnOutputDebugString(OUTPUT_DEBUG_STRING_INFO &in Info, string &in Message)
-	asExecuteDynamic(def.asOnOutputDebugString, (OBJECT)Info->DebugString, (OBJECT)&message);
+	ModuleCallback(asOnOutputDebugString, (OBJECT)Info->DebugString, (OBJECT)&message);
 }
 
 void ExceptionCallback(CBTYPE Type, PLUG_CB_EXCEPTION *Info)
 {
 	// void OnException(EXCEPTION_DEBUG_INFO &in Info)
-	asExecuteDynamic(def.asOnException, (OBJECT)Info->Exception);
+	ModuleCallback(asOnException, (OBJECT)Info->Exception);
 }
 
 void BreakpointCallback(CBTYPE Type, PLUG_CB_BREAKPOINT *Info)
 {
 	// void OnBreakpoint(BRIDGEBP &in Info)
-	asExecuteDynamic(def.asOnBreakpoint, (OBJECT)Info->breakpoint);
+	ModuleCallback(asOnBreakpoint, (OBJECT)Info->breakpoint);
 }
 
 void PauseCallback(CBTYPE Type, PLUG_CB_PAUSEDEBUG *Info)
 {
 	// void OnPauseDebug()
-	asExecuteDynamic(def.asOnPauseDebug);
+	ModuleCallback(asOnPauseDebug);
 }
 
 void ResumeCallback(CBTYPE Type, PLUG_CB_RESUMEDEBUG *Info)
 {
 	// void OnResumeDebug()
-	asExecuteDynamic(def.asOnResumeDebug);
+	ModuleCallback(asOnResumeDebug);
 }
 
 void SteppedCallback(CBTYPE Type, PLUG_CB_STEPPED *Info)
 {
 	// void OnStepped()
-	asExecuteDynamic(def.asOnStepped);
+	ModuleCallback(asOnStepped);
 }
 
 void AttachCallback(CBTYPE Type, PLUG_CB_ATTACH *Info)
 {
 	// void OnAttach(uint ProcessId)
-	asExecuteDynamic(def.asOnAttach, Info->dwProcessId);
+	ModuleCallback(asOnAttach, Info->dwProcessId);
 }
 
 void DetachCallback(CBTYPE Type, PLUG_CB_DETACH *Info)
 {
 	// void OnDetach(PROCESS_INFORMATION &in Info)
-	asExecuteDynamic(def.asOnDetach, (OBJECT)Info->fdProcessInfo);
+	ModuleCallback(asOnDetach, (OBJECT)Info->fdProcessInfo);
 }
 
 void DebugEventCallback(CBTYPE Type, PLUG_CB_DEBUGEVENT *Info)
 {
 	// void OnDebugEvent(DEBUG_EVENT &in Info)
-	asExecuteDynamic(def.asOnDebugEvent, (OBJECT)Info->DebugEvent);
+	ModuleCallback(asOnDebugEvent, (OBJECT)Info->DebugEvent);
 }
 
 void MenuEntryCallback(CBTYPE Type, PLUG_CB_MENUENTRY *Info)
 {
 	// void OnMenuEvent(int Entry)
-	asExecuteDynamic(def.asOnMenuEvent, Info->hEntry);
+	ModuleCallback(asOnMenuEvent, Info->hEntry);
 }
 
 DLL_EXPORT bool pluginit(PLUG_INITSTRUCT *InitStruct)
@@ -167,7 +171,7 @@ DLL_EXPORT bool pluginit(PLUG_INITSTRUCT *InitStruct)
 		return false;
 	}
 
-	Script::EngineLoad(&def, dir);
+	Script::Db::LoadModule(dir);
 
 	// Add all of the callbacks
 	_plugin_registercallback(pluginHandle, CB_INITDEBUG,			(CBPLUGIN)InitDebugCallback);
@@ -196,7 +200,6 @@ DLL_EXPORT bool pluginit(PLUG_INITSTRUCT *InitStruct)
 DLL_EXPORT bool plugstop()
 {
 	_plugin_menuclear(hMenu);
-
 	return true;
 }
 
@@ -209,5 +212,5 @@ DLL_EXPORT void plugsetup(PLUG_SETUPSTRUCT *SetupStruct)
 	_plugin_menuaddentry(hMenu, 0, "Load script");
 
 	// void OnPluginSetup(int DebuggerVersion, int PluginVersion)
-	asExecuteDynamic(def.asOnPluginSetup, DBG_VERSION, PLUGIN_VERSION);
+	ModuleCallback(asOnPluginSetup, DBG_VERSION, PLUGIN_VERSION);
 }

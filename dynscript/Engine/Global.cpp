@@ -124,16 +124,15 @@ namespace Global
 			int size	= Gen->GetEngine()->GetSizeOfPrimitiveType(type);
 
 			// Custom type macro to shorten code
-			#define MAKE_TYPE(id, type) case id: va_arg(va, type) = *(type *)addr; break
+#define MAKE_TYPE(id, type)						\
+			case id:							\
+			assert(size == sizeof(type));		\
+			va_arg(va, type) = *(type *)addr;	\
+			break
 
 			// Handle each specific anglescript arg with the va_arg api
 			switch (type)
 			{
-			case asTYPEID_VOID:
-				// Non-value type
-				assert(false);
-				break;
-
 			MAKE_TYPE(asTYPEID_BOOL,	bool);
 			MAKE_TYPE(asTYPEID_UINT8,	unsigned __int8);
 			MAKE_TYPE(asTYPEID_INT8,	__int8);
@@ -146,8 +145,14 @@ namespace Global
 			MAKE_TYPE(asTYPEID_FLOAT,	float);
 			MAKE_TYPE(asTYPEID_DOUBLE,	double);
 
+			// Non-value type
+			case asTYPEID_VOID:
+				assert(false);
+				break;
+
 			default:
 			{
+				// std::string
 				if (type == StringTypeId)
 					va_arg(va, const char *) = ((std::string *)addr)->c_str();
 				else
@@ -155,7 +160,7 @@ namespace Global
 			}
 			break;
 			}
-			#undef MAKE_TYPE
+#undef MAKE_TYPE
 		}
 	}
 }

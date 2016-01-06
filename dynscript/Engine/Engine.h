@@ -13,9 +13,13 @@ namespace Script
 #ifdef _WIN64
 #define SetReturnPointerVal(x) SetReturnQWord((asQWORD)(x))
 #define SetArgPointerVal SetArgQWord
+
+static_assert(sizeof(asQWORD) == sizeof(PVOID), "Invalid pointer size!");
 #else
 #define SetReturnPointerVal(x) SetReturnDWord((asDWORD)(x))
 #define SetArgPointerVal SetArgDWord
+
+static_assert(sizeof(asDWORD) == sizeof(PVOID), "Invalid pointer size!");
 #endif
 
 	struct ModuleDef

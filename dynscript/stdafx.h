@@ -4,12 +4,13 @@
 #include <windows.h>
 #include <stdio.h>
 #include <assert.h>
+#include <algorithm>
+#include <vector>
 #include <functional>
 
 ////////////////////////////
 // AngelScript /////////////
 ////////////////////////////
-
 #include "angelscript/include/angelscript.h"
 #include "angelscript/add-on/scriptstdstring/scriptstdstring.h"
 #include "angelscript/add-on/scriptbuilder/scriptbuilder.h"
@@ -17,7 +18,6 @@
 ////////////////////////////
 // X64DBG //////////////////
 ////////////////////////////
-
 #define PLUGIN_NAME		"DynScript"
 #define PLUGIN_VERSION	001
 
@@ -43,5 +43,4 @@
 ////////////////////////////
 // ScriptEngine ////////////
 ////////////////////////////
-
 #include "Engine/stdafx.h"

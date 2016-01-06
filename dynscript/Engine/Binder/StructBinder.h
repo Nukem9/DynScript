@@ -3,13 +3,20 @@
 #define STR_GET(x)	{ return std::string(Obj->x); }
 #define STR_SET(x)	{ strcpy_s(Obj->x, Val.c_str()); }
 
-#define AS_BEGIN_STRUCT(decl)		{																					\
-									static const char *__zname = #decl;													\
-									using objDecl = decl;																\
-									VERIFY(Engine->RegisterObjectType(#decl, sizeof(decl), asOBJ_VALUE | asOBJ_POD));
+//
+// Declare an entire structure
+//
+#define AS_BEGIN_STRUCT(decl)								{																					\
+															static const char *__zname = #decl;													\
+															using objDecl = decl;																\
+															VERIFY(Engine->RegisterObjectType(#decl, sizeof(decl), asOBJ_VALUE | asOBJ_POD));
 
-#define AS_END_STRUCT()				}
+#define AS_END_STRUCT()										}
 
+//
+// Declare a structure member:
+// TYPE name;
+//
 #define AS_STRUCT_ADD(type, member)							VERIFY(Engine->RegisterObjectProperty(	\
 																__zname,							\
 																#type " " #member,					\
