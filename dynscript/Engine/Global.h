@@ -14,6 +14,8 @@ namespace Global
 
 	void asSprintf(asIScriptGeneric *Gen);
 	void asPrintf(asIScriptGeneric *Gen);
+
+	void asParseFormat(asIScriptGeneric *Gen, int FormatArgIndex, char *Buffer, size_t Size);
 	void asParseVarArgs(asIScriptGeneric *Gen, int ArgIndex, char *Buffer, size_t Size);
 }
 }

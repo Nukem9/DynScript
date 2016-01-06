@@ -14,10 +14,12 @@ namespace Global
 		//
 		// TYPES
 		//
+		VERIFY(StringTypeId = Engine->GetTypeIdByDecl("string"));
+
 		VERIFY(Engine->RegisterTypedef("byte", "uint8"));
 		VERIFY(Engine->RegisterTypedef("word", "uint16"));
 		VERIFY(Engine->RegisterTypedef("dword", "uint"));
-		VERIFY(Engine->RegisterTypedef("qword", "uint16"));
+		VERIFY(Engine->RegisterTypedef("qword", "uint64"));
 
 #ifdef _WIN64_
 		VERIFY(Engine->RegisterTypedef("ptr", "uint64"));
@@ -26,8 +28,6 @@ namespace Global
 		VERIFY(Engine->RegisterTypedef("ptr", "uint"));
 		VERIFY(Engine->RegisterTypedef("handle", "uint"));
 #endif
-
-		StringTypeId = Engine->GetTypeIdByDecl("string");
 
 		//
 		// FUNCTIONS
@@ -78,15 +78,8 @@ namespace Global
 
 	void asSprintf(asIScriptGeneric *Gen)
 	{
-		// Format is the first parameter
-		std::string *format = static_cast<std::string *>(Gen->GetArgObject(0));
-
-		// Buffer to store arguments for vsnprintf_s
-		char data[256];
-		asParseVarArgs(Gen, 1, data, sizeof(data));
-
-		char buf[1024];
-		vsnprintf_s(buf, _TRUNCATE, format->c_str(), (va_list)&data);
+		char buf[2048];
+		asParseFormat(Gen, 0, buf, ARRAYSIZE(buf));
 
 		// Set the return data
 		std::string ret(buf);
@@ -96,6 +89,15 @@ namespace Global
 
 	void asPrintf(asIScriptGeneric *Gen)
 	{
+		char buf[2048];
+		asParseFormat(Gen, 0, buf, ARRAYSIZE(buf));
+
+		// Send the string to the log window
+		_plugin_logprintf(buf);
+	}
+
+	void asParseFormat(asIScriptGeneric *Gen, int FormatArgIndex, char *Buffer, size_t Size)
+	{
 		// Format is the first parameter
 		std::string *format = static_cast<std::string *>(Gen->GetArgObject(0));
 
@@ -103,11 +105,8 @@ namespace Global
 		char data[256];
 		asParseVarArgs(Gen, 1, data, sizeof(data));
 
-		char buf[1024];
-		vsnprintf_s(buf, _TRUNCATE, format->c_str(), (va_list)&data);
-
-		// Send the string to the log window
-		_plugin_logprintf(buf);
+		// Send back to caller
+		vsnprintf_s(Buffer, Size, _TRUNCATE, format->c_str(), (va_list)&data);
 	}
 
 	void asParseVarArgs(asIScriptGeneric *Gen, int ArgIndex, char *Buffer, size_t Size)
@@ -124,34 +123,39 @@ namespace Global
 			int type	= Gen->GetArgTypeId(i);
 			int size	= Gen->GetEngine()->GetSizeOfPrimitiveType(type);
 
+			// Custom type macro to shorten code
+			#define MAKE_TYPE(id, type) case id: va_arg(va, type) = *(type *)addr; break
+
+			// Handle each specific anglescript arg with the va_arg api
 			switch (type)
 			{
 			case asTYPEID_VOID:
+				// Non-value type
+				assert(false);
 				break;
 
-			case asTYPEID_BOOL:
-			case asTYPEID_UINT8:
-			case asTYPEID_INT8:
-			case asTYPEID_UINT16:
-			case asTYPEID_INT16:
-			case asTYPEID_UINT32:
-			case asTYPEID_INT32:
-			case asTYPEID_UINT64:
-			case asTYPEID_INT64:
-			case asTYPEID_FLOAT:
-			case asTYPEID_DOUBLE:
-				memcpy(va, addr, size);
-				va += size;
-				break;
+			MAKE_TYPE(asTYPEID_BOOL,	bool);
+			MAKE_TYPE(asTYPEID_UINT8,	unsigned __int8);
+			MAKE_TYPE(asTYPEID_INT8,	__int8);
+			MAKE_TYPE(asTYPEID_UINT16,	unsigned __int16);
+			MAKE_TYPE(asTYPEID_INT16,	__int16);
+			MAKE_TYPE(asTYPEID_UINT32,	unsigned __int32);
+			MAKE_TYPE(asTYPEID_INT32,	__int32);
+			MAKE_TYPE(asTYPEID_UINT64,	unsigned __int64);
+			MAKE_TYPE(asTYPEID_INT64,	__int64);
+			MAKE_TYPE(asTYPEID_FLOAT,	float);
+			MAKE_TYPE(asTYPEID_DOUBLE,	double);
 
 			default:
+			{
 				if (type == StringTypeId)
 					va_arg(va, const char *) = ((std::string *)addr)->c_str();
 				else
-					memcpy(va, addr, size);
-					va += size;
-				break;
+					assert(false);
 			}
+			break;
+			}
+			#undef MAKE_TYPE
 		}
 	}
 }
