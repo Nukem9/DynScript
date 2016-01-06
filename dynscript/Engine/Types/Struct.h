@@ -108,7 +108,7 @@ namespace Script
 			AS_STRUCT_ADD(bool, d)
 			AS_STRUCT_ADD(bool, o)
 		AS_END_STRUCT()
-
+		/*
 		// REGDUMP
 		AS_BEGIN_STRUCT(REGDUMP)
 			AS_STRUCT_ADD(ptr,   cax)
@@ -145,7 +145,7 @@ namespace Script
 			AS_STRUCT_ADD(ptr,   dr6)
 			AS_STRUCT_ADD(ptr,   dr7)
 		AS_END_STRUCT()
-
+		*/
 		// DISASM_ARG
 		AS_BEGIN_STRUCT(DISASM_ARG)
 			AS_STRUCT_ADD(DISASM_ARGTYPE, type)
@@ -188,8 +188,8 @@ namespace Script
 		// THREADINFO
 		AS_BEGIN_STRUCT(THREADINFO)
 			AS_STRUCT_ADD(int,       ThreadNumber)
-			AS_STRUCT_ADD(handle,    hThread)
-			AS_STRUCT_ADD(dword,     dwThreadId)
+			AS_STRUCT_ADD(handle,    Handle)
+			AS_STRUCT_ADD(dword,     ThreadId)
 			AS_STRUCT_ADD(ptr,       ThreadStartAddress)
 			AS_STRUCT_ADD(ptr,       ThreadLocalBase)
 			AS_STRUCT_ACCESS(string, threadName, STR_GET(threadName), STR_SET(threadName))

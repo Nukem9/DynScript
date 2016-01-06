@@ -146,7 +146,7 @@ namespace Dbg
 		ULONG_PTR base	= DbgMemFindBaseAddr(Address, &retSize);
 
 		if (*Size)
-			*Size = retSize;
+			*Size = (asUINT)retSize;
 
 		return base;
 	}

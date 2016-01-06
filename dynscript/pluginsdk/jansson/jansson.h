@@ -15,18 +15,17 @@
 #include "jansson_config.h"
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /* version */
 
 #define JANSSON_MAJOR_VERSION  2
-#define JANSSON_MINOR_VERSION  6
+#define JANSSON_MINOR_VERSION  7
 #define JANSSON_MICRO_VERSION  0
 
 /* Micro version is omitted if it's 0 */
-#define JANSSON_VERSION  "2.6"
+#define JANSSON_VERSION  "2.7"
 
 /* Version as a 3-byte hex number, e.g. 0x010201 == 1.2.1. Use this
    for numeric comparisons, e.g. #if JANSSON_VERSION_HEX >= ... */
@@ -37,7 +36,8 @@ extern "C"
 
 /* types */
 
-typedef enum {
+typedef enum
+{
     JSON_OBJECT,
     JSON_ARRAY,
     JSON_STRING,
@@ -53,8 +53,6 @@ typedef struct json_t
     json_type type;
     size_t refcount;
 } json_t;
-
-typedef json_t* JSON;
 
 #ifndef JANSSON_USING_CMAKE /* disabled if using cmake */
 #if JSON_INTEGER_IS_LONG_LONG
@@ -87,22 +85,11 @@ typedef long json_int_t;
 
 __declspec(dllimport) json_t* json_object(void);
 __declspec(dllimport) json_t* json_array(void);
-__declspec(dllimport) json_t* json_string(const char *value);
-__declspec(dllimport) json_t* json_stringn(const char *value, size_t len);
-__declspec(dllimport) json_t* json_string_nocheck(const char *value);
-__declspec(dllimport) json_t* json_stringn_nocheck(const char *value, size_t len);
+__declspec(dllimport) json_t* json_string(const char* value);
+__declspec(dllimport) json_t* json_stringn(const char* value, size_t len);
+__declspec(dllimport) json_t* json_string_nocheck(const char* value);
+__declspec(dllimport) json_t* json_stringn_nocheck(const char* value, size_t len);
 __declspec(dllimport) json_t* json_integer(json_int_t value);
-static JSON_INLINE
-json_t *json_hex(json_int_t value)
-{
-    char hexvalue[20];
-#ifdef _WIN64
-    sprintf(hexvalue, "0x%llX", value);
-#else //x64
-    sprintf(hexvalue, "0x%X", value);
-#endif //_WIN64
-    return json_string(hexvalue);
-}
 __declspec(dllimport) json_t* json_real(double value);
 __declspec(dllimport) json_t* json_true(void);
 __declspec(dllimport) json_t* json_false(void);
@@ -110,20 +97,20 @@ __declspec(dllimport) json_t* json_false(void);
 __declspec(dllimport) json_t* json_null(void);
 
 static JSON_INLINE
-json_t *json_incref(json_t *json)
+json_t* json_incref(json_t* json)
 {
-    if(json && json->refcount != (size_t)-1)
+    if(json && json->refcount != (size_t) - 1)
         ++json->refcount;
     return json;
 }
 
 /* do not call json_delete directly */
-__declspec(dllimport) void json_delete(json_t *json);
+__declspec(dllimport) void json_delete(json_t* json);
 
 static JSON_INLINE
-void json_decref(json_t *json)
+void json_decref(json_t* json)
 {
-    if(json && json->refcount != (size_t)-1 && --json->refcount == 0)
+    if(json && json->refcount != (size_t) - 1 && --json->refcount == 0)
         json_delete(json);
 }
 
@@ -146,22 +133,22 @@ typedef struct
 /* getters, setters, manipulation */
 
 __declspec(dllimport) void json_object_seed(size_t seed);
-__declspec(dllimport) size_t json_object_size(const json_t *object);
-__declspec(dllimport) json_t* json_object_get(const json_t *object, const char *key);
-__declspec(dllimport) int json_object_set_new(json_t *object, const char *key, json_t *value);
-__declspec(dllimport) int json_object_set_new_nocheck(json_t *object, const char *key, json_t *value);
-__declspec(dllimport) int json_object_del(json_t *object, const char *key);
-__declspec(dllimport) int json_object_clear(json_t *object);
-__declspec(dllimport) int json_object_update(json_t *object, json_t *other);
-__declspec(dllimport) int json_object_update_existing(json_t *object, json_t *other);
-__declspec(dllimport) int json_object_update_missing(json_t *object, json_t *other);
-__declspec(dllimport) void* json_object_iter(json_t *object);
-__declspec(dllimport) void* json_object_iter_at(json_t *object, const char *key);
-__declspec(dllimport) void* json_object_key_to_iter(const char *key);
-__declspec(dllimport) void* json_object_iter_next(json_t *object, void *iter);
-__declspec(dllimport) const char* json_object_iter_key(void *iter);
-__declspec(dllimport) json_t* json_object_iter_value(void *iter);
-__declspec(dllimport) int json_object_iter_set_new(json_t *object, void *iter, json_t *value);
+__declspec(dllimport) size_t json_object_size(const json_t* object);
+__declspec(dllimport) json_t* json_object_get(const json_t* object, const char* key);
+__declspec(dllimport) int json_object_set_new(json_t* object, const char* key, json_t* value);
+__declspec(dllimport) int json_object_set_new_nocheck(json_t* object, const char* key, json_t* value);
+__declspec(dllimport) int json_object_del(json_t* object, const char* key);
+__declspec(dllimport) int json_object_clear(json_t* object);
+__declspec(dllimport) int json_object_update(json_t* object, json_t* other);
+__declspec(dllimport) int json_object_update_existing(json_t* object, json_t* other);
+__declspec(dllimport) int json_object_update_missing(json_t* object, json_t* other);
+__declspec(dllimport) void* json_object_iter(json_t* object);
+__declspec(dllimport) void* json_object_iter_at(json_t* object, const char* key);
+__declspec(dllimport) void* json_object_key_to_iter(const char* key);
+__declspec(dllimport) void* json_object_iter_next(json_t* object, void* iter);
+__declspec(dllimport) const char* json_object_iter_key(void* iter);
+__declspec(dllimport) json_t* json_object_iter_value(void* iter);
+__declspec(dllimport) int json_object_iter_set_new(json_t* object, void* iter, json_t* value);
 
 #define json_object_foreach(object, key, value) \
     for(key = json_object_iter_key(json_object_iter(object)); \
@@ -169,106 +156,91 @@ __declspec(dllimport) int json_object_iter_set_new(json_t *object, void *iter, j
         key = json_object_iter_key(json_object_iter_next(object, json_object_key_to_iter(key))))
 
 #define json_array_foreach(array, index, value) \
-	for(index = 0; \
-		index < json_array_size(array) && (value = json_array_get(array, index)); \
-		index++)
+    for(index = 0; \
+        index < json_array_size(array) && (value = json_array_get(array, index)); \
+        index++)
 
 static JSON_INLINE
-int json_object_set(json_t *object, const char *key, json_t *value)
+int json_object_set(json_t* object, const char* key, json_t* value)
 {
     return json_object_set_new(object, key, json_incref(value));
 }
 
 static JSON_INLINE
-int json_object_set_nocheck(json_t *object, const char *key, json_t *value)
+int json_object_set_nocheck(json_t* object, const char* key, json_t* value)
 {
     return json_object_set_new_nocheck(object, key, json_incref(value));
 }
 
 static JSON_INLINE
-int json_object_iter_set(json_t *object, void *iter, json_t *value)
+int json_object_iter_set(json_t* object, void* iter, json_t* value)
 {
     return json_object_iter_set_new(object, iter, json_incref(value));
 }
 
-__declspec(dllimport) size_t json_array_size(const json_t *array);
-__declspec(dllimport) json_t* json_array_get(const json_t *array, size_t index);
-__declspec(dllimport) int json_array_set_new(json_t *array, size_t index, json_t *value);
-__declspec(dllimport) int json_array_append_new(json_t *array, json_t *value);
-__declspec(dllimport) int json_array_insert_new(json_t *array, size_t index, json_t *value);
-__declspec(dllimport) int json_array_remove(json_t *array, size_t index);
-__declspec(dllimport) int json_array_clear(json_t *array);
-__declspec(dllimport) int json_array_extend(json_t *array, json_t *other);
+__declspec(dllimport) size_t json_array_size(const json_t* array);
+__declspec(dllimport) json_t* json_array_get(const json_t* array, size_t index);
+__declspec(dllimport) int json_array_set_new(json_t* array, size_t index, json_t* value);
+__declspec(dllimport) int json_array_append_new(json_t* array, json_t* value);
+__declspec(dllimport) int json_array_insert_new(json_t* array, size_t index, json_t* value);
+__declspec(dllimport) int json_array_remove(json_t* array, size_t index);
+__declspec(dllimport) int json_array_clear(json_t* array);
+__declspec(dllimport) int json_array_extend(json_t* array, json_t* other);
 
 static JSON_INLINE
-int json_array_set(json_t *array, size_t ind, json_t *value)
+int json_array_set(json_t* array, size_t ind, json_t* value)
 {
     return json_array_set_new(array, ind, json_incref(value));
 }
 
 static JSON_INLINE
-int json_array_append(json_t *array, json_t *value)
+int json_array_append(json_t* array, json_t* value)
 {
     return json_array_append_new(array, json_incref(value));
 }
 
 static JSON_INLINE
-int json_array_insert(json_t *array, size_t ind, json_t *value)
+int json_array_insert(json_t* array, size_t ind, json_t* value)
 {
     return json_array_insert_new(array, ind, json_incref(value));
 }
 
-__declspec(dllimport) const char* json_string_value(const json_t *string);
-__declspec(dllimport) size_t json_string_length(const json_t *string);
-__declspec(dllimport) json_int_t json_integer_value(const json_t *integer);
-static JSON_INLINE
-json_int_t json_hex_value(const json_t* hex)
-{
-    json_int_t ret;
-    const char* hexvalue;
-    hexvalue=json_string_value(hex);
-    if(!hexvalue)
-        return 0;
-#ifdef _WIN64
-    sscanf(hexvalue, "0x%llX", &ret);
-#else //x64
-    sscanf(hexvalue, "0x%X", &ret);
-#endif //_WIN64
-    return ret;
-}
-__declspec(dllimport) double json_real_value(const json_t *real);
-__declspec(dllimport) double json_number_value(const json_t *json);
+__declspec(dllimport) const char* json_string_value(const json_t* string);
+__declspec(dllimport) size_t json_string_length(const json_t* string);
+__declspec(dllimport) json_int_t json_integer_value(const json_t* integer);
+__declspec(dllimport) double json_real_value(const json_t* real);
+__declspec(dllimport) double json_number_value(const json_t* json);
 
-__declspec(dllimport) int json_string_set(json_t *string, const char *value);
-__declspec(dllimport) int json_string_setn(json_t *string, const char *value, size_t len);
-__declspec(dllimport) int json_string_set_nocheck(json_t *string, const char *value);
-__declspec(dllimport) int json_string_setn_nocheck(json_t *string, const char *value, size_t len);
-__declspec(dllimport) int json_integer_set(json_t *integer, json_int_t value);
-__declspec(dllimport) int json_real_set(json_t *real, double value);
+__declspec(dllimport) int json_string_set(json_t* string, const char* value);
+__declspec(dllimport) int json_string_setn(json_t* string, const char* value, size_t len);
+__declspec(dllimport) int json_string_set_nocheck(json_t* string, const char* value);
+__declspec(dllimport) int json_string_setn_nocheck(json_t* string, const char* value, size_t len);
+__declspec(dllimport) int json_integer_set(json_t* integer, json_int_t value);
+__declspec(dllimport) int json_real_set(json_t* real, double value);
 
 /* pack, unpack */
 
-__declspec(dllimport) json_t* json_pack(const char *fmt, ...);
-__declspec(dllimport) json_t* json_pack_ex(json_error_t *error, size_t flags, const char *fmt, ...);
-__declspec(dllimport) json_t* json_vpack_ex(json_error_t *error, size_t flags, const char *fmt, va_list ap);
+__declspec(dllimport) json_t* json_pack(const char* fmt, ...);
+__declspec(dllimport) json_t* json_pack_ex(json_error_t* error, size_t flags, const char* fmt, ...);
+__declspec(dllimport) json_t* json_vpack_ex(json_error_t* error, size_t flags, const char* fmt, va_list ap);
 
 #define JSON_VALIDATE_ONLY  0x1
 #define JSON_STRICT         0x2
 
-__declspec(dllimport) int json_unpack(json_t *root, const char *fmt, ...);
-__declspec(dllimport) int json_unpack_ex(json_t *root, json_error_t *error, size_t flags, const char *fmt, ...);
-__declspec(dllimport) int json_vunpack_ex(json_t *root, json_error_t *error, size_t flags, const char *fmt, va_list ap);
+__declspec(dllimport) int json_unpack(json_t* root, const char* fmt, ...);
+__declspec(dllimport) int json_unpack_ex(json_t* root, json_error_t* error, size_t flags, const char* fmt, ...);
+__declspec(dllimport) int json_vunpack_ex(json_t* root, json_error_t* error, size_t flags, const char* fmt, va_list ap);
 
 
 /* equality */
 
-__declspec(dllimport) int json_equal(json_t *value1, json_t *value2);
+__declspec(dllimport) int json_equal(json_t* value1, json_t* value2);
 
 
 /* copying */
 
-__declspec(dllimport) json_t* json_copy(json_t *value);
-__declspec(dllimport) json_t* json_deep_copy(const json_t *value);
+__declspec(dllimport) json_t* json_copy(json_t* value);
+__declspec(dllimport) json_t* json_deep_copy(const json_t* value);
 
 
 /* decoding */
@@ -279,18 +251,19 @@ __declspec(dllimport) json_t* json_deep_copy(const json_t *value);
 #define JSON_DECODE_INT_AS_REAL 0x8
 #define JSON_ALLOW_NUL          0x10
 
-typedef size_t (*json_load_callback_t)(void *buffer, size_t buflen, void *data);
+typedef size_t (*json_load_callback_t)(void* buffer, size_t buflen, void* data);
 
-__declspec(dllimport) json_t* json_loads(const char *input, size_t flags, json_error_t *error);
-__declspec(dllimport) json_t* json_loadb(const char *buffer, size_t buflen, size_t flags, json_error_t *error);
-__declspec(dllimport) json_t* json_loadf(FILE *input, size_t flags, json_error_t *error);
-__declspec(dllimport) json_t* json_load_file(const char *path, size_t flags, json_error_t *error);
-__declspec(dllimport) json_t* json_load_callback(json_load_callback_t callback, void *data, size_t flags, json_error_t *error);
+__declspec(dllimport) json_t* json_loads(const char* input, size_t flags, json_error_t* error);
+__declspec(dllimport) json_t* json_loadb(const char* buffer, size_t buflen, size_t flags, json_error_t* error);
+__declspec(dllimport) json_t* json_loadf(FILE* input, size_t flags, json_error_t* error);
+__declspec(dllimport) json_t* json_load_file(const char* path, size_t flags, json_error_t* error);
+__declspec(dllimport) json_t* json_load_callback(json_load_callback_t callback, void* data, size_t flags, json_error_t* error);
 
 
 /* encoding */
 
-#define JSON_INDENT(n)          ((n) & 0x1F)
+#define JSON_MAX_INDENT         0x1F
+#define JSON_INDENT(n)          ((n) & JSON_MAX_INDENT)
 #define JSON_COMPACT            0x20
 #define JSON_ENSURE_ASCII       0x40
 #define JSON_SORT_KEYS          0x80
@@ -299,17 +272,17 @@ __declspec(dllimport) json_t* json_load_callback(json_load_callback_t callback, 
 #define JSON_ESCAPE_SLASH       0x400
 #define JSON_REAL_PRECISION(n)  (((n) & 0x1F) << 11)
 
-typedef int (*json_dump_callback_t)(const char *buffer, size_t size, void *data);
+typedef int (*json_dump_callback_t)(const char* buffer, size_t size, void* data);
 
-__declspec(dllimport) char* json_dumps(const json_t *json, size_t flags);
-__declspec(dllimport) int json_dumpf(const json_t *json, FILE *output, size_t flags);
-__declspec(dllimport) int json_dump_file(const json_t *json, const char *path, size_t flags);
-__declspec(dllimport) int json_dump_callback(const json_t *json, json_dump_callback_t callback, void *data, size_t flags);
+__declspec(dllimport) char* json_dumps(const json_t* json, size_t flags);
+__declspec(dllimport) int json_dumpf(const json_t* json, FILE* output, size_t flags);
+__declspec(dllimport) int json_dump_file(const json_t* json, const char* path, size_t flags);
+__declspec(dllimport) int json_dump_callback(const json_t* json, json_dump_callback_t callback, void* data, size_t flags);
 
 /* custom memory allocation */
 
-typedef void *(*json_malloc_t)(size_t);
-typedef void (*json_free_t)(void *);
+typedef void* (*json_malloc_t)(size_t);
+typedef void (*json_free_t)(void*);
 
 __declspec(dllimport) void json_set_alloc_funcs(json_malloc_t malloc_fn, json_free_t free_fn);
 

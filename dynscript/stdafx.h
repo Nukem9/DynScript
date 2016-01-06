@@ -22,13 +22,13 @@
 #define PLUGIN_VERSION	001
 
 #ifdef _WIN64
-#pragma comment(lib, "pluginsdk/x64_dbg.lib")
-#pragma comment(lib, "pluginsdk/x64_bridge.lib")
+#pragma comment(lib, "pluginsdk/x64dbg.lib")
+#pragma comment(lib, "pluginsdk/x64bridge.lib")
 #pragma comment(lib, "pluginsdk/TitanEngine/TitanEngine_x64.lib")
 #pragma comment(lib, "pluginsdk/dbghelp/dbghelp_x64.lib")
 #else
-#pragma comment(lib, "pluginsdk/x32_dbg.lib")
-#pragma comment(lib, "pluginsdk/x32_bridge.lib")
+#pragma comment(lib, "pluginsdk/x32dbg.lib")
+#pragma comment(lib, "pluginsdk/x32bridge.lib")
 #pragma comment(lib, "pluginsdk/TitanEngine/TitanEngine_x86.lib")
 #pragma comment(lib, "pluginsdk/dbghelp/dbghelp_x86.lib")
 #endif
