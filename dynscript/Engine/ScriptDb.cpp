@@ -4,14 +4,14 @@ namespace Script
 {
 namespace Db
 {
-	std::vector<ModuleDef> dbModules;
+	std::vector<ModuleDef *> dbModules;
 
 	bool LoadModule(const char *FilePath)
 	{
 		// Request engine to load script
-		ModuleDef def;
+		ModuleDef *def = new ModuleDef;
 
-		if (EngineLoad(&def, FilePath))
+		if (EngineLoad(def, FilePath))
 			return false;
 
 		// Insert this script to the global array of handles
@@ -22,10 +22,10 @@ namespace Db
 	bool UnloadModule(const char *Name)
 	{
 		auto foundModule = std::find_if(dbModules.begin(), dbModules.end(),
-		[Name](const ModuleDef& Item)
+		[Name](const ModuleDef *Item)
 		{
 			// Match internal AngelScript name
-			return _stricmp(Name, Item.asModule->GetName()) == 0;
+			return _stricmp(Name, Item->asModule->GetName()) == 0;
 		});
 
 		// Was this specific module found?
@@ -33,7 +33,8 @@ namespace Db
 			return false;
 
 		// Remove from the vector and free all module resources
-		foundModule->asModule->Discard();
+		(*foundModule)->asModule->Discard();
+		delete (*foundModule);
 		dbModules.erase(foundModule);
 		return true;
 	}
@@ -41,17 +42,17 @@ namespace Db
 	const ModuleDef *FindModule(const char *Name)
 	{
 		auto foundModule = std::find_if(dbModules.begin(), dbModules.end(),
-		[Name](const ModuleDef& Item)
+		[Name](const ModuleDef *Item)
 		{
 			// Match internal AngelScript name
-			return _stricmp(Name, Item.asModule->GetName()) == 0;
+			return _stricmp(Name, Item->asModule->GetName()) == 0;
 		});
 
 		// Was this specific module found?
 		if (foundModule == dbModules.end())
 			return false;
 
-		return &(*foundModule);
+		return *foundModule;
 	}
 
 	void DbUnloadAll()
@@ -59,7 +60,11 @@ namespace Db
 		// Unload all modules as a loop
 		ForeachModule([](const ModuleDef *Module)
 		{
+			// Free AngelScript allocation
 			Module->asModule->Discard();
+
+			// Free our memory allocation
+			delete Module;
 			return true;
 		});
 
@@ -70,9 +75,9 @@ namespace Db
 	bool ForeachModule(std::function<bool (const ModuleDef *Module)> Callback)
 	{
 		// Internally loop through the vector and send it to the callback
-		for (auto& module : dbModules)
+		for (auto module : dbModules)
 		{
-			if (!Callback(&module))
+			if (!Callback(module))
 				return false;
 		}
 
