@@ -11,7 +11,7 @@ namespace Db
 		// Request engine to load script
 		ModuleDef *def = new ModuleDef;
 
-		if (EngineLoad(def, FilePath))
+		if (!EngineLoad(def, FilePath))
 			return false;
 
 		// Insert this script to the global array of handles

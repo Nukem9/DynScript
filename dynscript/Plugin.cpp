@@ -153,6 +153,13 @@ void MenuEntryCallback(CBTYPE Type, PLUG_CB_MENUENTRY *Info)
 	ModuleCallback(asOnMenuEvent, Info->hEntry);
 }
 
+bool MyTest(const char *cmd)
+{
+	std::string testing(cmd);
+	ModuleCallback(asOnInitDebug, (OBJECT)&testing);
+	return true;
+}
+
 DLL_EXPORT bool pluginit(PLUG_INITSTRUCT *InitStruct)
 {
 	InitStruct->pluginVersion	= PLUGIN_VERSION;
@@ -172,6 +179,13 @@ DLL_EXPORT bool pluginit(PLUG_INITSTRUCT *InitStruct)
 	}
 
 	Script::Db::LoadModule(dir);
+
+	SCRIPTTYPEINFO info;
+	strcpy_s(info.name, "AngelScript");
+	info.id = 0;
+	info.execute = MyTest;
+	info.completeCommand = nullptr;
+	GuiRegisterScriptLanguage(&info);
 
 	// Add all of the callbacks
 	_plugin_registercallback(pluginHandle, CB_INITDEBUG,			(CBPLUGIN)InitDebugCallback);

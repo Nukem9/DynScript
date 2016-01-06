@@ -48,7 +48,7 @@ namespace Dbg
 		RegisterFunction(asGetModuleAt,          "bool GetModuleAt(ptr Address, string &out Module)");
 		RegisterFunction(asGetBpxTypeAt,         "BPXTYPE GetBpxTypeAt(ptr Address)");
 		RegisterFunction(asValFromString,        "ptr ValFromString(string &in Value)");
-		RegisterFunction(asGetRegDump,           "bool GetRegDump(REGDUMP &out Dump)");
+		//RegisterFunction(asGetRegDump,           "bool GetRegDump(REGDUMP &out Dump)");
 		// DbgValToString
 		RegisterFunction(asMemIsValidReadPtr,    "bool MemIsValidReadPtr(ptr Address)");
 		RegisterFunction(asGetBpList,            "int GetBpList(BPXTYPE Type, BPMAP &out Map)");

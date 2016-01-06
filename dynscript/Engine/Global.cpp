@@ -111,7 +111,10 @@ namespace Global
 
 	void asParseVarArgs(asIScriptGeneric *Gen, int ArgIndex, char *Buffer, size_t Size)
 	{
-		// Zero any data
+		// Keep an engine handle
+		auto engine = Gen->GetEngine();
+
+		// Zero output data
 		memset(Buffer, 0, Size);
 
 		// Convert each parameter to the va_list form
@@ -121,7 +124,7 @@ namespace Global
 		{
 			PVOID addr	= *(PVOID *)Gen->GetAddressOfArg(i);
 			int type	= Gen->GetArgTypeId(i);
-			int size	= Gen->GetEngine()->GetSizeOfPrimitiveType(type);
+			int size	= engine->GetSizeOfPrimitiveType(type);
 
 			// Custom type macro to shorten code
 #define MAKE_TYPE(id, type)						\
@@ -145,18 +148,31 @@ namespace Global
 			MAKE_TYPE(asTYPEID_FLOAT,	float);
 			MAKE_TYPE(asTYPEID_DOUBLE,	double);
 
-			// Non-value type
+			// Non-value type: this is hit when a parameter is not supplied (exit the function)
 			case asTYPEID_VOID:
-				assert(false);
-				break;
+				return;
 
 			default:
 			{
-				// std::string
+				// if (object is a string)
 				if (type == StringTypeId)
+				{
+					// std::string
 					va_arg(va, const char *) = ((std::string *)addr)->c_str();
+				}
 				else
-					assert(false);
+				{
+					// Handle custom enumeration values
+					if (size == sizeof(int))
+					{
+							va_arg(va, int) = *(int *)addr;
+					}
+					else
+					{
+						// Bug or unimplemented
+						assert(false);
+					}
+				}
 			}
 			break;
 			}
