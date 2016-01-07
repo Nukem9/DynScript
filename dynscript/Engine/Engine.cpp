@@ -112,10 +112,10 @@ namespace Script
 		case asMSGTYPE_ERROR:		type = "ERR ";	break;
 		case asMSGTYPE_WARNING:		type = "WARN";	break;
 		case asMSGTYPE_INFORMATION: type = "INFO";	break;
-		default:					type = "UNK ";	break;
+		default:					type = "MISC";	break;
 		}
 
-		_plugin_printf("AngelScript: %s (%d, %d) : %s : %s\n", msg->section, msg->row, msg->col, type, msg->message);
+		_plugin_printf("AngelScript: %s (%d, %d): %s: %s\n", msg->section, msg->row, msg->col, type, msg->message);
 	}
 
 	asIScriptContext *CreateContext(asIScriptFunction *Function)

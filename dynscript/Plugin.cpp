@@ -153,10 +153,37 @@ void MenuEntryCallback(CBTYPE Type, PLUG_CB_MENUENTRY *Info)
 	ModuleCallback(asOnMenuEvent, Info->hEntry);
 }
 
+void MyCompleter(const char *text, char **entries, int *entryCount)
+{
+	for (int i = 0; i < *entryCount; i++)
+	{
+		char *temp = (char *)BridgeAlloc(sizeof(char) * 64);
+		sprintf_s(temp, 64, "entry%i", i);
+
+		entries[i] = temp;
+	}
+}
+
 bool MyTest(const char *cmd)
 {
-	std::string testing(cmd);
-	ModuleCallback(asOnInitDebug, (OBJECT)&testing);
+	// Must be a valid command
+	if (!cmd || strlen(cmd) <= 0)
+		return false;
+
+	// Check for a return value
+	if (!strstr(cmd, "return"))
+	{
+		// If there's no return statement, expect a void
+		ExecuteString(Script::EngInst, cmd);
+	}
+	else
+	{
+		// Assume returning integer
+		int ret = 0;
+		ExecuteString(Script::EngInst, cmd, &ret, asTYPEID_INT32);
+		_plugin_printf("ret: %d\n", ret);
+	}
+
 	return true;
 }
 
@@ -184,7 +211,7 @@ DLL_EXPORT bool pluginit(PLUG_INITSTRUCT *InitStruct)
 	strcpy_s(info.name, "AngelScript");
 	info.id = 0;
 	info.execute = MyTest;
-	info.completeCommand = nullptr;
+	info.completeCommand = MyCompleter;
 	GuiRegisterScriptLanguage(&info);
 
 	// Add all of the callbacks

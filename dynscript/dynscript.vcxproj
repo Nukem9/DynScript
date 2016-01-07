@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="angelscript\add-on\scriptbuilder\scriptbuilder.h" />
+    <ClInclude Include="angelscript\add-on\scripthelper\scripthelper.h" />
     <ClInclude Include="angelscript\add-on\scriptstdstring\scriptstdstring.h" />
     <ClInclude Include="angelscript\include\angelscript.h" />
     <ClInclude Include="angelscript\source\as_array.h" />
@@ -201,6 +202,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="angelscript\add-on\scripthelper\scripthelper.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="angelscript\add-on\scriptstdstring\scriptstdstring.cpp">

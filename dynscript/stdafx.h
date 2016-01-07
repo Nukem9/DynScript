@@ -14,6 +14,7 @@
 #include "angelscript/include/angelscript.h"
 #include "angelscript/add-on/scriptstdstring/scriptstdstring.h"
 #include "angelscript/add-on/scriptbuilder/scriptbuilder.h"
+#include "angelscript/add-on/scripthelper/scripthelper.h"
 
 ////////////////////////////
 // X64DBG //////////////////
